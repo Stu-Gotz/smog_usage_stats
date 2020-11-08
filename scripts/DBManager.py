@@ -6,7 +6,7 @@ import os
 # -------------------------------
 USER = "postgres"
 PASSWORD = "password"
-DATABSE = "usagestats"
+DATABASE = "usagestats"
 HOST = "127.0.0.1"
 PORT = "5432"
 
@@ -24,7 +24,7 @@ try:
 
     print("Connected to POSTGRES!")
     CUR = CONN.cursor()
-except psycopg2.OperationalError:
+except pg2.OperationalError:
     print("Something isn't quite correct. Check database or connection variables.")
 
 # -------------------------------
@@ -52,10 +52,13 @@ class DB_Manager:
             sql_cmd += "CREATE TABLE usage_" + table_name + " (\n"
 
             sql_cmd += (
-                columns[0]
+                "id_ SERIAL PRIMARY KEY,\n"
+                + columns[7]
+                + " INTEGER,\n"
+                + columns[0]
                 + " INTEGER,\n"
                 + columns[1]
-                + " VARCHAR(50) PRIMARY KEY,\n"
+                + " VARCHAR(50),\n"
                 + columns[2]
                 + " FLOAT,\n"
                 + columns[3]
@@ -65,7 +68,11 @@ class DB_Manager:
                 + columns[5]
                 + " INTEGER,\n"
                 + columns[6]
-                + " FLOAT);"
+                + " FLOAT,\n"
+                + columns[8]
+                + " VARCHAR(10),\n"
+                + columns[9]
+                + " VARCHAR(20));"
             )
 
             CUR.execute(sql_cmd)
@@ -99,20 +106,20 @@ class DB_Manager:
         print("Connection to server closed.")
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     print("hello")
-#     __dir = os.getcwd()
-#     __dir = os.path.join(__dir, "data/csv")
-#     print(__dir)
+    print("hello")
+    __dir = os.getcwd()
+    __dir = os.path.join(__dir, "data/csv")
+    print(__dir)
 
-#     dirlist = os.listdir(__dir)
-#     print(dirlist)
-#     manager = DB_Manager(dirlist)
-#     print("connected")
-#     # datelist = []
-#     manager.construct_tables()
-#     print("table made")
-#     manager.fill_tables()
-#     print("filled")
-#     manager.close_db()
+    dirlist = os.listdir(__dir)
+    print(dirlist)
+    manager = DB_Manager(dirlist)
+    print("connected")
+    # datelist = []
+    manager.construct_tables()
+    print("table made")
+    manager.fill_tables()
+    print("filled")
+    manager.close_db()
