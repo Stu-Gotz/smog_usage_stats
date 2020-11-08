@@ -1,5 +1,6 @@
-import psycopg2 as pg2
 import os
+import zipfile
+import psycopg2 as pg2
 
 # -------------------------------
 # Connection variables
@@ -31,10 +32,9 @@ except pg2.OperationalError:
 # Database manager class
 # -------------------------------
 class DB_Manager:
-    def __init__(self, dirlist):
-        self.__path = os.getcwd()
-        self._path = os.path.join(os.getcwd(), "data/csv/")
-        self.dirlist = dirlist
+    def __init__(self):
+        self.table_name = "smogon_usage_stats"
+        self.__FILE = os.path.join(os.getcwd(), "data/statsmaster.csv")
 
     # -------------------------------
     # Create the tables for the database
@@ -42,40 +42,38 @@ class DB_Manager:
     def construct_tables(self):
 
         # # Input should be in format %YYYY_%DD_%Rating ex: 2020_03_1760
+        # zf = zipfile.ZipFile(self.__FILE)
+        master_file = open(self.__FILE)
+        columns = master_file.readline().strip().split(",")
 
-        for d in self.dirlist:
-            fileInput = open(os.path.join(self._path, d), "r")
-            columns = fileInput.readline().strip().split(",")
+        sql_cmd = "DROP TABLE IF EXISTS " + self.table_name + ";\n"
+        sql_cmd += "CREATE TABLE " + self.table_name + " (\n"
 
-            table_name = d.replace("-", "_").replace(".csv", "").replace(".json", "")
-            sql_cmd = "DROP TABLE IF EXISTS usage_" + table_name + ";\n"
-            sql_cmd += "CREATE TABLE usage_" + table_name + " (\n"
+        sql_cmd += (
+            "id_ SERIAL PRIMARY KEY,\n"
+            + columns[0]
+            + " INTEGER,\n"
+            + columns[1]
+            + " VARCHAR(50),\n"
+            + columns[2]
+            + " FLOAT,\n"
+            + columns[3]
+            + " INTEGER,\n"
+            + columns[4]
+            + " FLOAT,\n"
+            + columns[5]
+            + " INTEGER,\n"
+            + columns[6]
+            + " FLOAT,\n"
+            + columns[7]
+            + " INTEGER,\n"
+            + columns[8]
+            + " VARCHAR(10),\n"
+            + columns[9]
+            + " VARCHAR(50));"
+        )
 
-            sql_cmd += (
-                "id_ SERIAL PRIMARY KEY,\n"
-                + columns[7]
-                + " INTEGER,\n"
-                + columns[0]
-                + " INTEGER,\n"
-                + columns[1]
-                + " VARCHAR(50),\n"
-                + columns[2]
-                + " FLOAT,\n"
-                + columns[3]
-                + " INTEGER,\n"
-                + columns[4]
-                + " FLOAT,\n"
-                + columns[5]
-                + " INTEGER,\n"
-                + columns[6]
-                + " FLOAT,\n"
-                + columns[8]
-                + " VARCHAR(10),\n"
-                + columns[9]
-                + " VARCHAR(20));"
-            )
-
-            CUR.execute(sql_cmd)
+        CUR.execute(sql_cmd)
         CONN.commit()
 
     # -------------------------------
@@ -83,17 +81,9 @@ class DB_Manager:
     # -------------------------------.
     def fill_tables(self):
 
-        for d in self.dirlist:
-            fileInput = open(os.path.join(self._path, d), "r")
-            columns = tuple(fileInput.readline().strip().split(","))
-
-            # f = open(, "r")
-            filepath = os.path.join(self._path, d)
-            table_name = "usage_" + d.replace("-", "_").replace(".csv", "").replace(
-                ".json", ""
-            )
-            CUR.copy_from(fileInput, table_name, columns=columns, sep=",")
-
+        master_file = open(self.__FILE, "r")
+        columns = tuple(master_file.readline().strip().split(","))
+        CUR.copy_from(master_file, self.table_name, columns=columns, sep=",")
         CONN.commit()
 
     # -------------------------------
@@ -108,18 +98,18 @@ class DB_Manager:
 
 if __name__ == "__main__":
 
-    print("hello")
-    __dir = os.getcwd()
-    __dir = os.path.join(__dir, "data/csv")
-    print(__dir)
+    # print("hello")
+    # __dir = os.getcwd()
+    # __dir = os.path.join(__dir, "data/csv")
+    # print(__dir)
 
-    dirlist = os.listdir(__dir)
-    print(dirlist)
-    manager = DB_Manager(dirlist)
+    # dirlist = os.listdir(__dir)
+    # print(dirlist)
+    manager = DB_Manager()
     print("connected")
     # datelist = []
     manager.construct_tables()
     print("table made")
     manager.fill_tables()
     print("filled")
-    manager.close_db()
+    # manager.close_db()

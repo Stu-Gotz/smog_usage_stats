@@ -166,3 +166,4 @@ def create_data_structure(data_list, date, gtr, save_as="csv"):
 
 
 # combine_all_csv()
+print(os.getcwd())
