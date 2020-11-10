@@ -10,10 +10,14 @@ import pandas as pd
 from _utils import *
 
 """
-trees = ['chaos','leads','mega','metagame','monotype','moveset']
+TODO:
 
-suspect = set to bool; true="suspecttest", false=none
-monotype toggle too
+- (possible) Save queries in a txt folder to check before hitting smogon api. would help everybody
+- monotype paramaters
+- suspect toggle
+- other edgecases (noticed what seemed to be, when ou in a tier when that gen was most recent, is misssing above 1500 rating)
+- move lists to utils?
+- fix sleep
 """
 
 POKEDICT = pokedict()
@@ -98,12 +102,7 @@ MONOTYPES = [
     "monograss",
     "monosteel",
     "monoground",
-    "monorock",
-    "monoice",
-    "mononormal",
-    "monoghost",
-    "monodark",
-    "monopsychic",
+    "monorock"
 ]
 
 
@@ -120,6 +119,7 @@ class Contact_Smogon:
         ratings: list,
         mono: bool = False,
         monotype: list = [""],
+        suspect: bool = False,
     ):
         self.years = years  # needs to be list of 4 digit year
         self.months = months  # needs to be list of 2 digit month, ie 03 for March
@@ -128,6 +128,7 @@ class Contact_Smogon:
         self.gens = gens
         self.mono = mono
         self.monotype = monotype
+        self.suspect = suspect
         self._urls = []
 
         self._base = r"https://www.smogon.com/stats/"
@@ -233,7 +234,6 @@ class Contact_Smogon:
 
 if __name__ == "__main__":
 
-    # cs = Contact_Smogon([YEARS[0]], MONTHS, [GENS[0]], TIERS[0:8], RATINGS)
     cs = Contact_Smogon(YEARS, MONTHS, GENS, TIERS, RATINGS)
     cs.urls()
     cs.find_stats("csv")

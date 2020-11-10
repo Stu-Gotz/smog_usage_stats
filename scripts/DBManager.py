@@ -98,18 +98,9 @@ class DB_Manager:
 
 if __name__ == "__main__":
 
-    # print("hello")
-    # __dir = os.getcwd()
-    # __dir = os.path.join(__dir, "data/csv")
-    # print(__dir)
-
-    # dirlist = os.listdir(__dir)
-    # print(dirlist)
     manager = DB_Manager()
     print("connected")
-    # datelist = []
     manager.construct_tables()
     print("table made")
     manager.fill_tables()
     print("filled")
-    # manager.close_db()
