@@ -102,7 +102,7 @@ MONOTYPES = [
     "monograss",
     "monosteel",
     "monoground",
-    "monorock"
+    "monorock",
 ]
 
 
@@ -151,23 +151,27 @@ class Contact_Smogon:
                     for t in self.tiers:
                         for r in self.ratings:
                             gtr = "gen{g}{t}-{r}".format(g=g, t=t, r=r)
-                            nr1 = "1695"
-                            nr2 = "1825"
-                            if gtr == "gen8ou-1630":
-                                url = self._base + "{y}-{m}/gen{g}{t}-{nr1}.txt".format(
-                                    y=y, m=m, g=g, t=t, nr1=nr1
-                                )
-                                self._urls.append(url)
-                            elif gtr == "gen8ou-1760":
-                                url = self._base + "{y}-{m}/gen{g}{t}-{nr2}.txt".format(
-                                    y=y, m=m, g=g, t=t, nr2=nr2
-                                )
-                                self._urls.append(url)
-                            else:
-                                url = self._base + "{y}-{m}/{gtr}.txt".format(
-                                    y=y, m=m, gtr=gtr
-                                )
-                                self._urls.append(url)
+                            # nr1 = "1695"
+                            # nr2 = "1825"
+                            url = self._base + "{y}-{m}/{gtr}.txt".format(
+                                y=y, m=m, gtr=gtr
+                            )
+                            self._urls.append(url)
+                            # if gtr == "gen8ou-1630":
+                            #     url = self._base + "{y}-{m}/gen{g}{t}-{nr1}.txt".format(
+                            #         y=y, m=m, g=g, t=t, nr1=nr1
+                            #     )
+                            #     self._urls.append(url)
+                            # elif gtr == "gen8ou-1760":
+                            #     url = self._base + "{y}-{m}/gen{g}{t}-{nr2}.txt".format(
+                            #         y=y, m=m, g=g, t=t, nr2=nr2
+                            #     )
+                            #     self._urls.append(url)
+                            # else:
+                            #     url = self._base + "{y}-{m}/{gtr}.txt".format(
+                            #         y=y, m=m, gtr=gtr
+                            #     )
+                            #     self._urls.append(url)
 
     # --------------------------------
     # Stats retreival.
@@ -186,14 +190,6 @@ class Contact_Smogon:
             "1825",
         ]
 
-        # for debugging
-        # for u in self._urls:
-        #     for r in rating_list:
-        #         if r not in rating_list:  # throw error if invalid rating.
-        #             raise ValueError(
-        #                 "Invalid rating input. Rating value must be 1 of 0, 1500, 1630, 1695, 1760, or 1825."
-        #             )
-
         for url in self._urls:
 
             # Do the request to get data page
@@ -207,13 +203,14 @@ class Contact_Smogon:
                 # Parse out date and tier information from the url address.
                 src = url.split("/")
                 src = src[4:]
-
                 date = src[0]
 
                 gtr = src[1].strip(".txt")
+                tier = gtr.split("-")
+                tier = tier[0]
 
                 # Create the filenames for the temp files to save.
-                page_path = self.__temp + f"{"_".join(src)}"
+                page_path = self.__temp + f"{'_'.join(src)}"
 
                 # save and read it.
                 with open(page_path, "w") as f:
@@ -223,17 +220,19 @@ class Contact_Smogon:
                 # Draw the rest of the owl
                 fobj = open(page_path)
                 data_list = formating(fobj)
-                create_data_structure(data_list, date, gtr, save_as=output_type)
+                create_data_structure(data_list, date, tier, save_as=output_type)
                 os.remove(page_path)
-                time.sleep(5)
+                time.sleep(3)
             else:
                 pass
 
         clear_temp_files()
         return
 
+
 if __name__ == "__main__":
 
-    cs = Contact_Smogon(YEARS, MONTHS, GENS, TIERS, RATINGS)
+    # cs = Contact_Smogon(["2020"], ["08"], ["8"], ["ubers"], ["1630"])
+    cs = Contact_Smogon(YEARS, MONTHS, GENS, TIERS, ["1630", "1695"])
     cs.urls()
     cs.find_stats("csv")

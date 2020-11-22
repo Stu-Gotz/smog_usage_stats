@@ -40,9 +40,7 @@ class DB_Manager:
     # Create the tables for the database
     # -------------------------------
     def construct_tables(self):
-
-        # # Input should be in format %YYYY_%DD_%Rating ex: 2020_03_1760
-        # zf = zipfile.ZipFile(self.__FILE)
+ssssss
         master_file = open(self.__FILE)
         columns = master_file.readline().strip().split(",")
 
