@@ -6,7 +6,7 @@ import psycopg2 as pg2
 # Connection variables
 # -------------------------------
 USER = "postgres"
-PASSWORD = "password"
+PASSWORD = ""
 DATABASE = "usagestats"
 HOST = "127.0.0.1"
 PORT = "5432"
@@ -14,19 +14,17 @@ PORT = "5432"
 # -------------------------------
 # Connection to database
 # -------------------------------
-try:
-    CONN = pg2.connect(
-        database=DATABASE,
-        user=USER,
-        password=PASSWORD,
-        host=HOST,
-        port=PORT,
-    )
+CONN = pg2.connect(
+    database=DATABASE,
+    user=USER,
+    password=PASSWORD,
+    host=HOST,
+    port=PORT,
+)
 
-    print("Connected to POSTGRES!")
-    CUR = CONN.cursor()
-except pg2.OperationalError:
-    print("Something isn't quite correct. Check database or connection variables.")
+print("Connected to POSTGRES!")
+global CUR
+CUR = CONN.cursor()
 
 # -------------------------------
 # Database manager class
@@ -34,13 +32,18 @@ except pg2.OperationalError:
 class DB_Manager:
     def __init__(self):
         self.table_name = "smogon_usage_stats"
-        self.__FILE = os.path.join(os.getcwd(), "data/statsmaster.csv")
+        try: 
+            self.__FILE = os.path.join(
+                os.getcwd(), 
+                "data/statsmaster.csv"
+                )
+        except:
+            print('you haven\'t downloaded any stats')
 
     # -------------------------------
     # Create the tables for the database
     # -------------------------------
     def construct_tables(self):
-ssssss
         master_file = open(self.__FILE)
         columns = master_file.readline().strip().split(",")
 
@@ -49,28 +52,17 @@ ssssss
 
         sql_cmd += (
             "id_ SERIAL PRIMARY KEY,\n"
-            + columns[0]
-            + " INTEGER,\n"
-            + columns[1]
-            + " VARCHAR(50),\n"
-            + columns[2]
-            + " FLOAT,\n"
-            + columns[3]
-            + " INTEGER,\n"
-            + columns[4]
-            + " FLOAT,\n"
-            + columns[5]
-            + " INTEGER,\n"
-            + columns[6]
-            + " FLOAT,\n"
-            + columns[7]
-            + " INTEGER,\n"
-            + columns[8]
-            + " VARCHAR(10),\n"
-            + columns[9]
-            + " VARCHAR(50));"
+            + columns[0] + " INTEGER,\n"
+            + columns[1] + " VARCHAR(50),\n"
+            + columns[2] + " FLOAT,\n"
+            + columns[3] + " INTEGER,\n"
+            + columns[4] + " FLOAT,\n"
+            + columns[5] + " INTEGER,\n"
+            + columns[6] + " FLOAT,\n"
+            + columns[7] + " INTEGER,\n"
+            + columns[8] + " VARCHAR(10),\n"
+            + columns[9] + " VARCHAR(50));"
         )
-
         CUR.execute(sql_cmd)
         CONN.commit()
 
@@ -81,7 +73,12 @@ ssssss
 
         master_file = open(self.__FILE, "r")
         columns = tuple(master_file.readline().strip().split(","))
-        CUR.copy_from(master_file, self.table_name, columns=columns, sep=",")
+        CUR.copy_from(
+            master_file,
+            self.table_name,
+            columns=columns,
+            sep=","
+        )
         CONN.commit()
 
     # -------------------------------

@@ -4,7 +4,6 @@ import json
 import shutil
 import pandas as pd
 
-
 __BASE = r"https://www.smogon.com/stats/"
 __PATH = os.getcwd()
 
@@ -12,25 +11,25 @@ __PATH = os.getcwd()
 # Get a dictionary of the Pokedex
 # --------------------------------
 def pokedict():
-    j = open(r"/home/alan/dev/smog_usage_stats/data/reference/pokedex.json")
+    j = open(str(os.path.join(__PATH, "data/reference/pokedex.json")))
     _pokedict = json.load(j)
     return _pokedict
 
-
+pokedict()
 # --------------------------------
 # Temp folder management functions
 # --------------------------------
 def make_temp():
     if sys.platform.lower().startswith("win"):
-        TEMP_PATH = os.path.join(__PATH + r"\data\temp\\")
+        _TEMP_PATH = os.path.join(__PATH + r"\data\\temp\\")
     else:
-        TEMP_PATH = os.path.join(__PATH + "/data/temp/")
+        _TEMP_PATH = os.path.join(__PATH + "/data/temp/")
     try:
-        os.mkdir(TEMP_PATH)
-        print(f"Created temporary folder at {TEMP_PATH}.")
+        os.mkdir(_TEMP_PATH)
+        print(f"Created temporary folder at {_TEMP_PATH}.")
     except FileExistsError:
-        print(f"Temp folder already exists at {TEMP_PATH}.")
-    return TEMP_PATH
+        print(f"Temp folder already exists at {_TEMP_PATH}.")
+    return _TEMP_PATH
 
 
 TEMP_PATH = make_temp()
@@ -133,16 +132,15 @@ def create_data_structure(data_list, date, tier, save_as="csv"):
             "w",
         ) as f:
             json.dump(json_out, f)
-
     return f"{date} {tier} file created as a {save_as}."
 
 
 def combine_all_csv():
 
-    csv_path = "/home/alan/dev/smog_usage_stats/data/csv/"
-
+    csv_path = os.path.join(__PATH, "data/csv/")
+    
     dir_list = os.listdir(csv_path)
-    output = "/home/alan/dev/smog_usage_stats/data/statsmaster.csv"
+    output = os.path.join(__PATH, "data/statsmaster.csv")
     fout = open(output, "a")
     for f in range(len(dir_list)):
 
@@ -159,8 +157,4 @@ def combine_all_csv():
                 fout.write(line)
             x.close()
     fout.close()
-    return "deleted"
-
-
-combine_all_csv()
-print(os.getcwd())
+    return
