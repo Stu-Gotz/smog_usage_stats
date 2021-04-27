@@ -6,25 +6,23 @@ import sys
 import time
 import json
 import requests
+import datetime
 import pandas as pd
 from _utils import *
 
 """
 TODO:
 
-- (possible) Save queries in a txt folder to check before hitting smogon api. would help everybody
-- monotype paramaters
-- suspect toggle
-- other edgecases (noticed what seemed to be, when ou in a tier when that gen was most recent, is misssing above 1500 rating)
-- move lists to utils?
-- fix sleep
+- branch for monotype
+- write update functions to require no input and run from a .sh or batch file
+- anything else i think of
 """
 
 POKEDICT = pokedict()
 # --------------------------------
 # Global variables for default use
 # --------------------------------
-RATINGS = ["0", "1500", "1630", "1695", "1760"]
+RATINGS = ["1630", "1695"] #["0", "1500", "1630", "1695", "1760"]
 
 YEARS = ["2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014"]
 
@@ -86,6 +84,7 @@ TIERS = [
     "vgc2019",
     "vgc2020",
     "zu",
+    "doubleslc"
 ]
 
 MONOTYPES = [
@@ -227,12 +226,23 @@ class Contact_Smogon:
                 pass
 
         clear_temp_files()
+        combine_all_csv()
         return
 
+def update():
+    today = datetime.datetime.strftime(datetime.datetime.today(), "%Y-%m")
+    date = today.split('-')
+    year = date[0]
+    month = date[1]
+    cs = Contact_Smogon([year], [month], GENS, TIERS, RATINGS)
+    cs.urls()
+    cs.find_stats("csv")
 
 if __name__ == "__main__":
 
-    # cs = Contact_Smogon(["2020"], ["08"], ["8"], ["ubers"], ["1630"])
-    cs = Contact_Smogon(YEARS, MONTHS, GENS, TIERS, ["1630", "1695"])
+    # cs = Contact_Smogon(["2021"], ["08"], ["8"], ["ubers"], ["1630"])
+    cs = Contact_Smogon(["2021"], ["03", "04"], GENS, TIERS, ["1630", "1695"])
     cs.urls()
     cs.find_stats("csv")
+
+    # update()

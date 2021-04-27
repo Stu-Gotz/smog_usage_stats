@@ -1,25 +1,25 @@
 import os
 import sys
 import json
+import time
 import shutil
+from datetime import datetime
 import pandas as pd
 
 __BASE = r"https://www.smogon.com/stats/"
 __PATH = os.getcwd()
 
-# --------------------------------
-# Get a dictionary of the Pokedex
-# --------------------------------
+
 def pokedict():
+    """Creates a dictionary of pokedex data."""
     j = open(str(os.path.join(__PATH, "data/reference/pokedex.json")))
     _pokedict = json.load(j)
     return _pokedict
 
 pokedict()
-# --------------------------------
-# Temp folder management functions
-# --------------------------------
+
 def make_temp():
+    """Create temporary folders to store temporary data."""
     if sys.platform.lower().startswith("win"):
         _TEMP_PATH = os.path.join(__PATH + r"\data\\temp\\")
     else:
@@ -36,15 +36,21 @@ TEMP_PATH = make_temp()
 
 
 def clear_temp_files():
+    """Removes temporary files and folder."""
     shutil.rmtree(TEMP_PATH)
     message = f"Temporary files have been removed from {TEMP_PATH}."
     return {"message": message}
 
 
-# ---------------------------------
-# retreives the pokedex number for each pokemon
-# ---------------------------------
 def find_dex(row):
+    '''
+    Associates each pokemon with it's pokedex number.
+    
+        Args:
+            row (list): A row of data from the usage stats.
+        Returns:
+            dex (list): An updated list from `row` with the pokedex number.
+    '''
     pokemon_name = row[1].lower().replace("-totem", "")
     pokedex = pokedict()
     try:
@@ -58,6 +64,12 @@ def find_dex(row):
 # Removing formatting from recieved data
 # --------------------------------
 def formating(page):
+    '''
+    Formats the page from the webpage into an list of lists containing the stats.
+
+        Args:
+            page (object):
+    '''
     outlist = []
 
     # read lines of file with .readlines() and truncate the first 6 lines of
@@ -73,7 +85,9 @@ def formating(page):
             outlist.append(line)
     return outlist
 
-
+#---------------------------------
+# Creates the dataframe and saves to csv
+#---------------------------------
 def create_data_structure(data_list, date, tier, save_as="csv"):
 
     # Keys to be used in the dictionary creation below
@@ -134,7 +148,9 @@ def create_data_structure(data_list, date, tier, save_as="csv"):
             json.dump(json_out, f)
     return f"{date} {tier} file created as a {save_as}."
 
-
+#---------------------------------
+# Merges all separate csvs to a single csv to feed to the db
+#---------------------------------
 def combine_all_csv():
 
     csv_path = os.path.join(__PATH, "data/csv/")
@@ -158,3 +174,24 @@ def combine_all_csv():
             x.close()
     fout.close()
     return
+
+#---------------------------------
+# Append new data to master csv file for autorun.
+#---------------------------------
+def update_csv():
+
+    date = datetime.strftime(datetime.datetime.today(), "%Y-%m")
+    csv_path = os.path.join(__PATH, "data/")
+    csv_dir = os.path.join(__PATH, "data/csv")
+
+    csv_dir_list = os.listdir(csv_dir)
+
+    with open(os.path.join(csv_path, 'statsmaster.csv'), 'a') as f:
+        for csv in csv_dir_list:
+            if (date in csv) and (datetime.strftime(time.ctime(os.path.getctime(csv)), "%Y-%m") is not date):
+                next(csv, None)
+                for line in csv:
+                    f.write(line)
+        
+        f.close()
+        return
