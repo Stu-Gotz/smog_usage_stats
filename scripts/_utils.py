@@ -6,18 +6,23 @@ import shutil
 from datetime import datetime
 import pandas as pd
 
+
 __BASE = r"https://www.smogon.com/stats/"
 __PATH = os.getcwd()
 
-
+# --------------------------------
+# Generates a dictionary of pokemon data. Current as of Gen 8. 
+# I probably should update this, but I kinda forgot where I got it from.
+# --------------------------------
 def pokedict():
     """Creates a dictionary of pokedex data."""
     j = open(str(os.path.join(__PATH, "data/reference/pokedex.json")))
     _pokedict = json.load(j)
     return _pokedict
 
-pokedict()
-
+# --------------------------------
+# Makes a temp folder to hold files. I couldn't think of a better solution.
+# --------------------------------
 def make_temp():
     """Create temporary folders to store temporary data."""
     if sys.platform.lower().startswith("win"):
@@ -34,7 +39,9 @@ def make_temp():
 
 TEMP_PATH = make_temp()
 
-
+# --------------------------------
+# Clears temp files
+# --------------------------------
 def clear_temp_files():
     """Removes temporary files and folder."""
     shutil.rmtree(TEMP_PATH)
@@ -161,7 +168,6 @@ def combine_all_csv():
     for f in range(len(dir_list)):
 
         if f == 0:
-            continue
             x = open(csv_path + dir_list[f])
             for line in x:
                 fout.write(line)

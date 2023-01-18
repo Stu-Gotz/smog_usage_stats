@@ -4,6 +4,14 @@ import psycopg2 as pg2
 from os.path import join, dirname
 from dotenv import load_dotenv
 
+# TODOS:
+# 1 Create JSON input option. Mostly just to do it, and because 
+#   I find myself using a lot of JSON lately, 
+#   and having to use pandas is really fucking heavy.
+#
+# 2 Probably should make the database more optimal, 
+#   but I don't even know if anyone uses this.  
+
 # -------------------------------
 # Connection variables
 # -------------------------------
@@ -14,17 +22,17 @@ load_dotenv(dotenv_path)
 # Connection to database
 # -------------------------------
 # Server connection
-db_url = os.environ.get("DATABASE_URL")
-CONN = pg2.connect(db_url, sslmode="require")
+# db_url = os.environ.get("DATABASE_URL")
+# CONN = pg2.connect(db_url, sslmode="require")
 
 # Local connection
-# CONN = pg2.connect(
-#     database = os.environ.get('LOCAL_DATABASE'),
-#     user     = os.environ.get('LOCAL_USER'),
-#     password = os.environ.get('LOCAL_PASSWORD'),
-#     host     = os.environ.get('LOCAL_HOST'),
-#     port     = os.environ.get('LOCAL_PORT')
-# )
+CONN = pg2.connect(
+    database = os.environ.get('LOCAL_DATABASE'),
+    user     = os.environ.get('LOCAL_USER'),
+    password = os.environ.get('LOCAL_PASSWORD'),
+    host     = os.environ.get('LOCAL_HOST'),
+    port     = os.environ.get('LOCAL_PORT')
+)
 
 print("Connected to POSTGRES!")
 CUR = CONN.cursor()
@@ -93,11 +101,11 @@ class DB_Manager:
         CONN.close()
         print("Connection to server closed.")
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     manager = DB_Manager()
-#     print("connected")
-#     manager.construct_tables()
-#     print("table made")
-#     manager.fill_tables()
-#     print("filled")
+    manager = DB_Manager()
+    print("connected")
+    manager.construct_tables()
+    print("table made")
+    manager.fill_tables()
+    print("filled")

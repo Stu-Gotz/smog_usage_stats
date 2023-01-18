@@ -6,9 +6,9 @@ import sys
 import time
 import json
 import requests
-import datetime
+from datetime import datetime
 import pandas as pd
-from _utils import *
+from _utils import * # I know this is bad practice, but I couldn't be bothered to wrap everything in a class after re-arranging them the first time.
 
 """
 TODO:
@@ -24,7 +24,7 @@ POKEDICT = pokedict()
 # --------------------------------
 RATINGS = ["1630", "1695"] #["0", "1500", "1630", "1695", "1760"]
 
-YEARS = ["2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014"]
+YEARS = ["2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014"]
 
 MONTHS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
 
@@ -143,6 +143,7 @@ class Contact_Smogon:
     def urls(self):
         return self._urls
 
+    # There HAS to be a better way to do this. 
     def __set_urls(self):
         for y in self.years:
             for m in self.months:
@@ -156,6 +157,8 @@ class Contact_Smogon:
                                 y=y, m=m, gtr=gtr
                             )
                             self._urls.append(url)
+
+                            #This was from before I narrowed it down to just the two most common rating suffixes. Keeping it mostly for posterity, and in case I have to expand for some reason.
                             # if gtr == "gen8ou-1630":
                             #     url = self._base + "{y}-{m}/gen{g}{t}-{nr1}.txt".format(
                             #         y=y, m=m, g=g, t=t, nr1=nr1
@@ -177,17 +180,10 @@ class Contact_Smogon:
     # --------------------------------
     def find_stats(self, output_type):  # , urls):  # ,gen,tier,rating):
 
-        if not (output_type == "json" or output_type == "csv"):
+        if not ((output_type == "json" or output_type == "JSON" ) or ( output_type == "csv" or output_type == "CSV" )):
             raise ValueError("Please select either 'json' or 'csv' for output.")
-        # List of all valid ratings.
-        rating_list = [
-            "0",
-            "1500",
-            "1630",
-            "1760",
-            "1695",
-            "1825",
-        ]
+        # List of all valid ratings. not sure why this is unused?
+        # rating_list = RATINGS.copy()
 
         for url in self._urls:
 
@@ -197,7 +193,7 @@ class Contact_Smogon:
             except:
                 continue
             page = r.text
-            if not page.startswith("<html>"):
+            if not page.startswith("<html>"): #so bad calls dont break it as its a shotgun approach, not laser targeted (I will optimize later)
 
                 # Parse out date and tier information from the url address.
                 src = url.split("/")
@@ -230,7 +226,7 @@ class Contact_Smogon:
         return
 
 def update():
-    today = datetime.datetime.strftime(datetime.datetime.today(), "%Y-%m")
+    today = datetime.strftime(datetime.today(), "%Y-%m")
     date = today.split('-')
     year = date[0]
     month = date[1]
@@ -241,7 +237,7 @@ def update():
 if __name__ == "__main__":
 
     # cs = Contact_Smogon(["2021"], ["08"], ["8"], ["ubers"], ["1630"])
-    cs = Contact_Smogon(["2021"], ["03", "04"], GENS, TIERS, ["1630", "1695"])
+    cs = Contact_Smogon(YEARS, MONTHS, GENS, TIERS, RATINGS)
     cs.urls()
     cs.find_stats("csv")
 
