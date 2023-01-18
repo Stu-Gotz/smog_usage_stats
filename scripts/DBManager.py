@@ -22,17 +22,17 @@ load_dotenv(dotenv_path)
 # Connection to database
 # -------------------------------
 # Server connection
-# db_url = os.environ.get("DATABASE_URL")
-# CONN = pg2.connect(db_url, sslmode="require")
+db_url = os.environ.get("DATABASE_URL")
+CONN = pg2.connect(db_url, sslmode="require")
 
 # Local connection
-CONN = pg2.connect(
-    database = os.environ.get('LOCAL_DATABASE'),
-    user     = os.environ.get('LOCAL_USER'),
-    password = os.environ.get('LOCAL_PASSWORD'),
-    host     = os.environ.get('LOCAL_HOST'),
-    port     = os.environ.get('LOCAL_PORT')
-)
+# CONN = pg2.connect(
+#     database = os.environ.get('LOCAL_DATABASE'),
+#     user     = os.environ.get('LOCAL_USER'),
+#     password = os.environ.get('LOCAL_PASSWORD'),
+#     host     = os.environ.get('LOCAL_HOST'),
+#     port     = os.environ.get('LOCAL_PORT')
+# )
 
 print("Connected to POSTGRES!")
 CUR = CONN.cursor()
@@ -91,7 +91,7 @@ class DB_Manager:
             sep=","
         )
         CONN.commit()
-
+        
     # -------------------------------
     # Disconnect from database.
     # -------------------------------
@@ -109,3 +109,5 @@ if __name__ == "__main__":
     print("table made")
     manager.fill_tables()
     print("filled")
+    manager.close_db()
+    print("connection closed")

@@ -70,7 +70,7 @@ def find_dex(row):
 # --------------------------------
 # Removing formatting from recieved data
 # --------------------------------
-def formating(page):
+def formatting(page):
     '''
     Formats the page from the webpage into an list of lists containing the stats.
 

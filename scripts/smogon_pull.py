@@ -18,13 +18,15 @@ TODO:
 - anything else i think of
 """
 
+_TEMP = TEMP_PATH
+
 POKEDICT = pokedict()
 # --------------------------------
 # Global variables for default use
 # --------------------------------
 RATINGS = ["1630", "1695"] #["0", "1500", "1630", "1695", "1760"]
 
-YEARS = ["2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014"]
+YEARS = ["2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015", "2014"]
 
 MONTHS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
 
@@ -102,6 +104,11 @@ MONOTYPES = [
     "monosteel",
     "monoground",
     "monorock",
+    "monoghost",
+    "monopsychic",
+    "mononormal",
+    "monoice",
+    "monopoison"
 ]
 
 
@@ -134,8 +141,8 @@ class Contact_Smogon:
         # self._path = os.getcwd()
         # self._temp_path = ""
 
-        self.__temp = make_temp()
-        self.__urls = self.__set_urls()
+        self.__temp = _TEMP
+        self.__set_urls()
 
     # --------------------------------
     # Url handler methods.
@@ -157,6 +164,7 @@ class Contact_Smogon:
                                 y=y, m=m, gtr=gtr
                             )
                             self._urls.append(url)
+                            print("url appended")
 
                             #This was from before I narrowed it down to just the two most common rating suffixes. Keeping it mostly for posterity, and in case I have to expand for some reason.
                             # if gtr == "gen8ou-1630":
@@ -186,15 +194,16 @@ class Contact_Smogon:
         # rating_list = RATINGS.copy()
 
         for url in self._urls:
-
+            print(url)
             # Do the request to get data page
             try:
                 r = requests.get(url)
             except:
                 continue
             page = r.text
+            print(page)
             if not page.startswith("<html>"): #so bad calls dont break it as its a shotgun approach, not laser targeted (I will optimize later)
-
+                print(page)
                 # Parse out date and tier information from the url address.
                 src = url.split("/")
                 src = src[4:]
@@ -214,7 +223,7 @@ class Contact_Smogon:
 
                 # Draw the rest of the owl
                 fobj = open(page_path)
-                data_list = formating(fobj)
+                data_list = formatting(fobj)
                 create_data_structure(data_list, date, tier, save_as=output_type)
                 os.remove(page_path)
                 time.sleep(3)
@@ -237,7 +246,7 @@ def update():
 if __name__ == "__main__":
 
     # cs = Contact_Smogon(["2021"], ["08"], ["8"], ["ubers"], ["1630"])
-    cs = Contact_Smogon(YEARS, MONTHS, GENS, TIERS, RATINGS)
+    cs = Contact_Smogon([YEARS[1]], MONTHS, GENS, TIERS, RATINGS)
     cs.urls()
     cs.find_stats("csv")
 
