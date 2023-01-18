@@ -246,8 +246,7 @@ def update():
 if __name__ == "__main__":
 
     # cs = Contact_Smogon(["2021"], ["08"], ["8"], ["ubers"], ["1630"])
-    cs = Contact_Smogon([YEARS[1]], MONTHS, GENS, TIERS, RATINGS)
-    cs.urls()
+    cs = Contact_Smogon(YEARS, MONTHS, GENS, TIERS, RATINGS)
     cs.find_stats("csv")
 
     # update()
