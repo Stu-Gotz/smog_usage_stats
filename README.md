@@ -45,7 +45,7 @@ CONN = pg2.connect(db_url, sslmode="require")
 #     port     = os.environ.get('LOCAL_PORT')
 # )
 ```
-
+You can just press 1 from inside the DBManager file, i haven't worked out really how to get it as something importable, but I think you can still modify the global variables. It works on the assumption that you did not change the file location of the CSVs that were downloaded. Typing this out I think I already see a better way to refactor it.
 
 # What's Next?: 
 An actual todo list, with gusto.
