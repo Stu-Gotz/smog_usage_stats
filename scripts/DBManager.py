@@ -22,17 +22,17 @@ load_dotenv(dotenv_path)
 # Connection to database
 # -------------------------------
 # Server connection
-db_url = os.environ.get("DATABASE_URL")
-CONN = pg2.connect(db_url, sslmode="require")
+# db_url = os.environ.get("DATABASE_URL")
+# CONN = pg2.connect(db_url, sslmode="require")
 
 # Local connection
-# CONN = pg2.connect(
-#     database = os.environ.get('LOCAL_DATABASE'),
-#     user     = os.environ.get('LOCAL_USER'),
-#     password = os.environ.get('LOCAL_PASSWORD'),
-#     host     = os.environ.get('LOCAL_HOST'),
-#     port     = os.environ.get('LOCAL_PORT')
-# )
+CONN = pg2.connect(
+    database = os.environ.get('LOCAL_DATABASE'),
+    user     = os.environ.get('LOCAL_USER'),
+    password = os.environ.get('LOCAL_PASSWORD'),
+    host     = os.environ.get('LOCAL_HOST'),
+    port     = os.environ.get('LOCAL_PORT')
+)
 
 print("Connected to POSTGRES!")
 CUR = CONN.cursor()
@@ -54,6 +54,7 @@ class DB_Manager:
     # -------------------------------
     # Create the tables for the database
     # -------------------------------
+    # def construct_tables(self):
     def construct_tables(self):
         master_file = open(self.__FILE)
         columns = master_file.readline().strip().split(",")
@@ -76,7 +77,13 @@ class DB_Manager:
         )
         CUR.execute(sql_cmd)
         CONN.commit()
+        master_file.close()
 
+    # def construct_tables_json(self):
+    #     if self.__FILE.endswith('.json'):
+            
+    #     else:
+    #       return "Error: Please use `construct_tables_CSV` or generate a JSON file of data."
     # -------------------------------
     # Copy data from CSV files created in smogon_pull.py into database
     # -------------------------------.
@@ -91,7 +98,8 @@ class DB_Manager:
             sep=","
         )
         CONN.commit()
-        
+        master_file.close()
+        print("Tables updated with new data.")
     # -------------------------------
     # Disconnect from database.
     # -------------------------------
@@ -110,4 +118,4 @@ if __name__ == "__main__":
     manager.fill_tables()
     print("filled")
     manager.close_db()
-    print("connection closed")
+    

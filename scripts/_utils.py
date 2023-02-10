@@ -164,7 +164,7 @@ def combine_all_csv():
     
     dir_list = os.listdir(csv_path)
     output = os.path.join(__PATH, "data/statsmaster.csv")
-    fout = open(output, "a")
+    fout = open(output, "w")
     for f in range(len(dir_list)):
 
         if f == 0:

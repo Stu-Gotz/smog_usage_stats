@@ -5,13 +5,11 @@ The whole goal of this is to make an API that is stable and creates organised, n
 
 Currently able to:
 
-Connect to smogon, can get data in json or csv values, depending on what flavour you like. 
-*!Currently database only works on CSV files!*
-Can build a database, based on dates selected.
+Connect to smogon, can get data in json or csv values, depending on what flavour you like.
 
-# Use:
+## *!Currently database only supports reading of CSV files!*
 
-Eventually I will probably turn the smogon pull thing into its own little library so someone has the option to just create a fuckload of CSVs, and keep the database separate. On verra.
+# How to Use this to clone your own data and play around:
 
 ### Smogon pull
 

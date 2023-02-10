@@ -30,7 +30,7 @@ YEARS = ["2023", "2022", "2021", "2020", "2019", "2018", "2017", "2016", "2015",
 
 MONTHS = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"]
 
-GENS = ["8", "7", "6", "5", "4", "3", "2", "1"]
+GENS = ["9", "8", "7", "6", "5", "4", "3", "2", "1"]
 
 TIERS = [
     "ou",
@@ -157,12 +157,13 @@ class Contact_Smogon:
                 for g in self.gens:
                     for t in self.tiers:
                         for r in self.ratings:
-                            gtr = "gen{g}{t}-{r}".format(g=g, t=t, r=r)
+                            # gtr = "gen{g}{t}-{r}".format(g=g, t=t, r=r)
                             # nr1 = "1695"
                             # nr2 = "1825"
-                            url = self._base + "{y}-{m}/{gtr}.txt".format(
-                                y=y, m=m, gtr=gtr
-                            )
+                            url = f"{self._base}{y}-{m}/gen{g}{t}-{r}.txt"
+                            # .format(
+                            #     y=y, m=m, gtr=gtr
+                            # )
                             self._urls.append(url)
                             print("url appended")
 
@@ -225,6 +226,7 @@ class Contact_Smogon:
                 fobj = open(page_path)
                 data_list = formatting(fobj)
                 create_data_structure(data_list, date, tier, save_as=output_type)
+                fobj.close()
                 os.remove(page_path)
                 time.sleep(3)
             else:
@@ -237,16 +239,25 @@ class Contact_Smogon:
 def update():
     today = datetime.strftime(datetime.today(), "%Y-%m")
     date = today.split('-')
-    year = date[0]
-    month = date[1]
-    cs = Contact_Smogon([year], [month], GENS, TIERS, RATINGS)
+    year = int(date[0])
+    month = int(date[1])
+    if month == 1:
+        year -= 1
+        month = MONTHS[month-2]
+    else:
+        month = MONTHS[month-2]
+    print(year)
+    print(month)
+    cs = Contact_Smogon([str(year)], [str(month)], GENS, TIERS, RATINGS)
     cs.urls()
     cs.find_stats("csv")
 
 if __name__ == "__main__":
-
-    # cs = Contact_Smogon(["2021"], ["08"], ["8"], ["ubers"], ["1630"])
-    cs = Contact_Smogon(YEARS, MONTHS, GENS, TIERS, RATINGS)
-    cs.find_stats("csv")
-
+    update()
+#     # cs = Contact_Smogon(["2022"], ["08"], ["7"], ["ubers"], ["1630"])
+#     cs = Contact_Smogon(YEARS[2:3], MONTHS[3:-1], GENS, TIERS, RATINGS)
+#     # cs.__set_urls()
+#     cs.find_stats("csv")
+    # cs.find_stats("json")
+    
     # update()
