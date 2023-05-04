@@ -25,24 +25,6 @@
 #         "sp_attack": 65,
 #         "sp_defense": 65,
 #         "speed": 45,
-#         "against_normal": 1.0,
-#         "against_fire": 2.0,
-#         "against_water": 0.5,
-#         "against_electric": 0.5,
-#         "against_grass": 0.25,
-#         "against_ice": 2.0,
-#         "against_fight": 0.5,
-#         "against_poison": 1.0,
-#         "against_ground": 1.0,
-#         "against_flying": 2.0,
-#         "against_psychic": 2.0,
-#         "against_bug": 1.0,
-#         "against_rock": 1.0,
-#         "against_ghost": 1.0,
-#         "against_dragon": 1.0,
-#         "against_dark": 1.0,
-#         "against_steel": 1.0,
-#         "against_fairy": 0.5
 #     },
 import json
 import os
@@ -50,9 +32,13 @@ import requests
 from pokelist import PokeList
 from typechart import TypeChart
 
-def build_pokedex():
-  template= {
-      "pokedex_number": 0,
+
+
+
+class PokedexEntry():
+  def __init__(self):
+    self.template= {
+      "dex": 0,
       "name": "",
       "type_1": "",
       "type_2": "",
@@ -66,91 +52,48 @@ def build_pokedex():
       "sp_attack": 0,
       "sp_defense": 0,
       "speed": 0,
-      "against_normal": 1.0,
-      "against_fire": 1.0,
-      "against_water": 1.0,
-      "against_electric": 1.0,
-      "against_grass": 1.0,
-      "against_ice": 1.0,
-      "against_fight": 1.0,
-      "against_poison": 1.0,
-      "against_ground": 1.0,
-      "against_flying": 1.0,
-      "against_psychic": 1.0,
-      "against_bug": 1.0,
-      "against_rock": 1.0,
-      "against_ghost": 1.0,
-      "against_dragon": 1.0,
-      "against_dark": 1.0,
-      "against_steel": 1.0,
-      "against_fairy": 1.0
       }
   
-  output = {"data":{}}
+  @staticmethod
+  def set_template(self, field, value):
+    self.template[field] = value
+    
+  
+list_of_pokemon = PokeList().pokelist()
+type_chart = TypeChart().typechart()
 
-  list_of_pokemon = PokeList().pokelist()
-  type_chart = TypeChart.typechart()
+pokeapi = r"https://pokeapi.co/api/v2/pokemon/"
 
-  # pokeapi = r"https://pokeapi.co/api/v2/pokemon/"
+output = {"data":{}}
 
+for pokemon in list_of_pokemon[0:3]:
+  r = requests.get(''.join([pokeapi, pokemon]))
 
-  for pokemon in list_of_pokemon[0:3]:
-    # r = requests.get(''.join(pokeapi, pokemon))
+  data = r.json()
 
-    # data = r.json()
+  
+  stats = data["stats"]
+  entry = PokedexEntry().template()
+  entry['']
+  entry['dex'] = data['id']
+  entry['name'] = data['species']
+  entry['type_1'] = data['types'][0]['type']['name']
+  entry['type_2'] = data['types'][1]['type']['name'] or ""
+  entry['ability_1'] = data['abilities'][0]['ability']['name']
 
-    stats = data["stats"]
-    stats_dict = {
-      "hp":stats[0]["base_stat"],
-      "attack": stats[1]["base_stat"],
-      "defense": stats[2]["base_stat"],
-      "sp_attack": stats[3]["base_stat"],
-      "sp_defense": stats[4]["base_stat"],
-      "speed":stats[5]["base_stat"],
-      "total_poitns": stats_dict["hp"]+stats_dict["attack"]+stats_dict["defense"]
-                      +stats_dict["sp_attack"]+stats_dict["sp_defense"]
-                      +stats_dict["speed"]
-    }
-    target = output["data"]
-    target[pokemon] =  {
-      "pokedex_number": data["id"],
-      "name": pokemon,
-      "against_normal": 1.0,
-      "against_fire": 1.0,
-      "against_water": 1.0,
-      "against_electric": 1.0,
-      "against_grass": 1.0,
-      "against_ice": 1.0,
-      "against_fight": 1.0,
-      "against_poison": 1.0,
-      "against_ground": 1.0,
-      "against_flying": 1.0,
-      "against_psychic": 1.0,
-      "against_bug": 1.0,
-      "against_rock": 1.0,
-      "against_ghost": 1.0,
-      "against_dragon": 1.0,
-      "against_dark": 1.0,
-      "against_steel": 1.0,
-      "against_fairy": 1.0
-    }
+  print(entry)
 
-    target.update(stats_dict)
+# dummy = {"data":{}}
+# r = requests.get(r"https://pokeapi.co/api/v2/pokemon/bulbasaur")
+# d = r.json()
 
-    print(target)
-    print(output)
+# target = dummy
+# new_target = target["data"]["bulbasaur"] = {}
+# print(target)
+# print(new_target)
+# new_target["name"] = "bulbsaur"
+# new_target["pokedex_number"] = 1
+# print(new_target)
+# print(target)
 
-dummy = {"data":{}}
-r = requests.get(r"https://pokeapi.co/api/v2/pokemon/bulbasaur")
-d = r.json()
-
-target = dummy
-new_target = target["data"]["bulbasaur"] = {}
-print(target)
-print(new_target)
-new_target["name"] = "bulbsaur"
-new_target["pokedex_number"] = 1
-print(new_target)
-print(target)
-
-build_pokedex()
+# template()

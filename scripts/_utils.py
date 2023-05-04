@@ -24,6 +24,7 @@ def pokedict():
 # Makes a temp folder to hold files. I couldn't think of a better solution.
 # --------------------------------
 def make_temp():
+    _TEMP_PATH = ""
     """Create temporary folders to store temporary data."""
     if sys.platform.lower().startswith("win"):
         _TEMP_PATH = os.path.join(__PATH + r"\data\\temp\\")
@@ -49,7 +50,7 @@ def clear_temp_files():
     return {"message": message}
 
 
-def find_dex(row):
+def find_dex(row:list) -> int:
     '''
     Associates each pokemon with it's pokedex number.
     
@@ -61,7 +62,7 @@ def find_dex(row):
     pokemon_name = row[1].lower().replace("-totem", "")
     pokedex = pokedict()
     try:
-        dex = pokedex["data"][pokemon_name]["pokedex_number"]
+        dex = pokedex["data"][pokemon_name]["pokedex"]
     except KeyError:
         dex = -1
     return dex
@@ -145,8 +146,9 @@ def create_data_structure(data_list, date, tier, save_as="csv"):
         if not os.path.isdir(json_path):
             os.mkdir(json_path)
 
+
         json_out = dict(
-            zip(["rank" + str(x + 1) for x in range(len(dict_list))], dict_list)
+            zip([dict_list[x]["rank"] for x in range(len(dict_list))], dict_list)
         )
         with open(
             os.path.join(__PATH, f"data/json/{date}_{tier}.json"),
@@ -195,7 +197,7 @@ def update_csv():
     with open(os.path.join(csv_path, 'statsmaster.csv'), 'a') as f:
         for csv in csv_dir_list:
             if (date in csv) and (datetime.strftime(time.ctime(os.path.getctime(csv)), "%Y-%m") is not date):
-                next(csv, None)
+                next(csv)
                 for line in csv:
                     f.write(line)
         

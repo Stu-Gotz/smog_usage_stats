@@ -18,7 +18,7 @@ TODO:
 - anything else i think of
 """
 
-_TEMP = TEMP_PATH
+
 
 POKEDICT = pokedict()
 # --------------------------------
@@ -126,6 +126,7 @@ class Contact_Smogon:
         mono: bool = False,
         monotype: list = [""],
         suspect: bool = False,
+        # save_date: bool = False,
     ):
         self.years = years  # needs to be list of 4 digit year
         self.months = months  # needs to be list of 2 digit month, ie 03 for March
@@ -137,11 +138,10 @@ class Contact_Smogon:
         self.suspect = suspect
         self._urls = []
 
-        self._base = r"https://www.smogon.com/stats/"
         # self._path = os.getcwd()
         # self._temp_path = ""
 
-        self.__temp = _TEMP
+        self.__temp = TEMP_PATH
         self.__set_urls()
 
     # --------------------------------
@@ -152,20 +152,14 @@ class Contact_Smogon:
 
     # There HAS to be a better way to do this. 
     def __set_urls(self):
+        _base = r"https://www.smogon.com/stats/"
         for y in self.years:
             for m in self.months:
                 for g in self.gens:
                     for t in self.tiers:
                         for r in self.ratings:
-                            # gtr = "gen{g}{t}-{r}".format(g=g, t=t, r=r)
-                            # nr1 = "1695"
-                            # nr2 = "1825"
-                            url = f"{self._base}{y}-{m}/gen{g}{t}-{r}.txt"
-                            # .format(
-                            #     y=y, m=m, gtr=gtr
-                            # )
+                            url = f"{_base}{y}-{m}/gen{g}{t}-{r}.txt"
                             self._urls.append(url)
-                            print("url appended")
 
                             #This was from before I narrowed it down to just the two most common rating suffixes. Keeping it mostly for posterity, and in case I have to expand for some reason.
                             # if gtr == "gen8ou-1630":
@@ -183,54 +177,54 @@ class Contact_Smogon:
                             #         y=y, m=m, gtr=gtr
                             #     )
                             #     self._urls.append(url)
-
+    
     # --------------------------------
     # Stats retreival.
     # --------------------------------
     def find_stats(self, output_type):  # , urls):  # ,gen,tier,rating):
 
-        if not ((output_type == "json" or output_type == "JSON" ) or ( output_type == "csv" or output_type == "CSV" )):
-            raise ValueError("Please select either 'json' or 'csv' for output.")
-        # List of all valid ratings. not sure why this is unused?
-        # rating_list = RATINGS.copy()
+        if not (( output_type.lower() == "json" ) or ( output_type.lower() == "csv" )):
+            raise ValueError("Please specify 'json' or leave blank 'csv' format.")
+        else:
+            for url in self._urls:
+                print(url)
+                # Do the request to get data page
+                try:
+                    r = requests.get(url)
+                except:
+                    continue
+                page = r.text
+                
+                #so bad calls dont break it as its a shotgun approach, not laser targeted
+                # creation of URLS could be done better to reduce this
+                if not page.startswith("<html>"): 
+            
+                    # Parse out date and tier information from the url address.
+                    src = url.split("/")
+                    src = src[4:]
+                    date = src[0]
 
-        for url in self._urls:
-            print(url)
-            # Do the request to get data page
-            try:
-                r = requests.get(url)
-            except:
-                continue
-            page = r.text
-            print(page)
-            if not page.startswith("<html>"): #so bad calls dont break it as its a shotgun approach, not laser targeted (I will optimize later)
-                print(page)
-                # Parse out date and tier information from the url address.
-                src = url.split("/")
-                src = src[4:]
-                date = src[0]
+                    gtr = src[1].strip(".txt")
+                    tier = gtr.split("-")
+                    tier = tier[0]
 
-                gtr = src[1].strip(".txt")
-                tier = gtr.split("-")
-                tier = tier[0]
+                    # Create the filenames for the temp files to save.
+                    page_path = self.__temp + f"{'_'.join(src)}"
 
-                # Create the filenames for the temp files to save.
-                page_path = self.__temp + f"{'_'.join(src)}"
+                    # save and read it.
+                    with open(page_path, "w") as f:
+                        f.write(page)
+                        f.close()
 
-                # save and read it.
-                with open(page_path, "w") as f:
-                    f.write(page)
-                    f.close()
-
-                # Draw the rest of the owl
-                fobj = open(page_path)
-                data_list = formatting(fobj)
-                create_data_structure(data_list, date, tier, save_as=output_type)
-                fobj.close()
-                os.remove(page_path)
-                time.sleep(3)
-            else:
-                pass
+                    # Draw the rest of the owl
+                    fobj = open(page_path)
+                    data_list = formatting(fobj)
+                    create_data_structure(data_list, date, tier, save_as=output_type)
+                    fobj.close()
+                    os.remove(page_path)
+                    time.sleep(3)
+                else:
+                    pass
 
         clear_temp_files()
         combine_all_csv()
@@ -253,11 +247,10 @@ def update():
     cs.find_stats("csv")
 
 if __name__ == "__main__":
-    update()
-#     # cs = Contact_Smogon(["2022"], ["08"], ["7"], ["ubers"], ["1630"])
-#     cs = Contact_Smogon(YEARS[2:3], MONTHS[3:-1], GENS, TIERS, RATINGS)
-#     # cs.__set_urls()
-#     cs.find_stats("csv")
+    # update()
+    # cs = Contact_Smogon(["2022"], ["08"], ["7"], ["ubers"], ["1630"])
+    cs = Contact_Smogon([YEARS[0]], MONTHS[1:4], GENS, TIERS, RATINGS)
+    cs.find_stats("csv")
     # cs.find_stats("json")
     
     # update()

@@ -24,6 +24,7 @@ load_dotenv(dotenv_path)
 # Server connection
 # db_url = os.environ.get("DATABASE_URL")
 # CONN = pg2.connect(db_url, sslmode="require")
+# print("Connected remotely.")
 
 # Local connection
 CONN = pg2.connect(
@@ -33,8 +34,9 @@ CONN = pg2.connect(
     host     = os.environ.get('LOCAL_HOST'),
     port     = os.environ.get('LOCAL_PORT')
 )
+print("Connected locally.")
 
-print("Connected to POSTGRES!")
+print("Connected to PG!")
 CUR = CONN.cursor()
 
 # -------------------------------

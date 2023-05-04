@@ -16,55 +16,55 @@ def splitList(inlist, sep):
 #      if matchobj.group(0) == '': return ' '
 #      else: return '-'
 
-with open(r"./scripts/statsparsetest.txt") as f:
-    # print(f.read())
+# with open(r"./scripts/statsparsetest.txt") as f:
+#     # print(f.read())
 
-    pattern = "'\#{2,}'"
-    fList = list()
-    listOfLines = f.readlines()
-    print(len(listOfLines))
+#     pattern = "'\#{2,}'"
+#     fList = list()
+#     listOfLines = f.readlines()
+#     print(len(listOfLines))
 
-    for l in listOfLines:
-        l = l.replace("\n", "")
-        l = l.replace("|", ",")
-        l = l.replace("  ", "#")
-        l = l.replace("\t", "")
-        l = l.replace(" , ", "")
-        l = l.replace(", ", "")
-        l = l.replace(" ,", "")
-        l = l.replace("%", "")
-        l = l.replace(" +----------------------------------------+ ", ";")
-        # l = re.sub(l, )
+#     for l in listOfLines:
+#         l = l.replace("\n", "")
+#         l = l.replace("|", ",")
+#         l = l.replace("  ", "#")
+#         l = l.replace("\t", "")
+#         l = l.replace(" , ", "")
+#         l = l.replace(", ", "")
+#         l = l.replace(" ,", "")
+#         l = l.replace("%", "")
+#         l = l.replace(" +----------------------------------------+ ", ";")
+#         # l = re.sub(l, )
 
-        print(l)
+#         print(l)
 
-        # if l.startswith(","):
-        #     l = l[1:]
-        #     print(l)
-        fList.append(l)
+#         # if l.startswith(","):
+#         #     l = l[1:]
+#         #     print(l)
+#         fList.append(l)
 
-print(fList)
+# print(fList)
 
-newlist = []
-for f in fList:
-    x = re.sub(r"\#{2,}", "", f)
-    x = re.sub(r"#", " ", x)
-    newlist.append(x)
+# newlist = []
+# for f in fList:
+#     x = re.sub(r"\#{2,}", "", f)
+#     x = re.sub(r"#", " ", x)
+#     newlist.append(x)
 
-finalList = list(splitList(newlist[1:], ";"))
-print(finalList)
-
-
-def list_to_object(inputList):
-
-    pokemonObject = {}
-    pokemonObject["name"] = inputList[0][0]
-    print(pokemonObject["name"])
-
-    return pokemonObject
+# # finalList = list(splitList(newlist[1:], ";"))
+# print(finalList)
 
 
-list_to_object(finalList)
+# def list_to_object(inputList):
+
+#     pokemonObject = {}
+#     pokemonObject["name"] = inputList[0][0]
+#     print(pokemonObject["name"])
+
+#     return pokemonObject
+
+
+# list_to_object(finalList)
 
 # [
 #     ["Vullaby"],
@@ -137,3 +137,40 @@ list_to_object(finalList)
 #     ],
 #     [";"],
 # ]
+
+import pandas as pd
+import os
+import json
+
+df = pd.read_csv(r"C:\dev\python\smog_usage_stats\TODOS\Pokedex_Ver_SV2.csv", header=0)
+df.fillna("", inplace=True)
+recs = df.to_dict(orient="records")
+
+dex = []
+
+for rec in recs:
+
+    if 'alolan' in rec['name']:
+        newname = rec['name'].strip('alolan ')
+        newname += '-alola'
+        rec['name'] = newname
+    elif 'galarian' in rec['name']:
+        newname = rec['name'].strip('galarian ')
+        newname += '-galar'
+        rec['name'] = newname
+    elif 'hisuian' in rec['name']:
+        newname = rec['name'].strip('hisuian ')
+        newname += '-hisui'
+        rec['name'] = newname
+    elif 'paldean' in rec['name']:
+        newname = rec['name'].strip('paldean ')
+        newname += '-paldea'
+        rec['name'] = newname
+
+    newdict = {}
+    newdict[rec["name"]] = rec
+    dex.append(newdict)
+
+with open("testdex.json", "w") as f:
+    json.dump(dex, f)
+    f.close()
