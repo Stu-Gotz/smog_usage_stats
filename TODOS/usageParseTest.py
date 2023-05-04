@@ -146,12 +146,12 @@ df = pd.read_csv(r"C:\dev\python\smog_usage_stats\TODOS\Pokedex_Ver_SV2.csv", he
 df.fillna("", inplace=True)
 recs = df.to_dict(orient="records")
 
-dex = []
+dex = {"data": {}}
 
 for rec in recs:
 
     if 'alolan' in rec['name']:
-        newname = rec['name'].strip('alolan ')
+        newname = rec['name'].replace('alolan ', "")
         newname += '-alola'
         rec['name'] = newname
     elif 'galarian' in rec['name']:
@@ -169,8 +169,33 @@ for rec in recs:
 
     newdict = {}
     newdict[rec["name"]] = rec
-    dex.append(newdict)
+    dex["data"].update(newdict)
 
-with open("testdex.json", "w") as f:
+with open("C:\\dev\\python\\smog_usage_stats\\data\\reference\\pokedex.json", "w") as f:
     json.dump(dex, f)
     f.close()
+
+dex = open("C:\\dev\\python\\smog_usage_stats\\data\\reference\\pokedex.json")
+dex = json.load(dex)
+print(dex)
+
+dex = dex["data"]
+dexidx = []
+# for d in dex['data']:
+#     print(d)
+    # dexidx.append((i, dex[i]['name']))
+# print(dexidx)
+path = os.path.join(os.getcwd(), r"data\csv")
+for f in os.listdir(path):
+    fpath = os.path.abspath(os.path.join(path, f))
+    if fpath.endswith('cap.csv') or fpath.endswith('mixandmega.csv'):
+        continue
+    else:
+
+        # print(fpath)
+        df = pd.read_csv(fpath, header=0)
+        for i, row in df.iterrows():
+
+            p = row['pokemon']
+            df.at[i, 'dex'] = dex[p]["pokedex"]
+        

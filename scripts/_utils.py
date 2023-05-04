@@ -5,6 +5,7 @@ import time
 import shutil
 from datetime import datetime
 import pandas as pd
+import re
 
 
 __BASE = r"https://www.smogon.com/stats/"
@@ -87,7 +88,9 @@ def formatting(page):
 
     # Remove the formatting that clogs up the pipes.
     for line in listOfLines:
-        line = line.replace("|", ",").replace(" ", "").replace("%", "")
+        line = line.replace("|", ",").replace(" ", "").replace("%", "").lower()
+        line = re.sub(r"(pikachu([-A-Za-z]))", "pikachu", line)
+        # print(line)
         if line.startswith(","):
             line = line[1:-2]
             outlist.append(line)
