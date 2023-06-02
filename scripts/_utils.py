@@ -60,10 +60,11 @@ def find_dex(row:list) -> int:
         Returns:
             dex (list): An updated list from `row` with the pokedex number.
     '''
-    pokemon_name = row[1].lower().replace("-totem", "")
+    pokemon_name = row[1].lower().replace("", "")
+    pokemon_name = row[1].lower().replace("pikachu-original", "pikachu")
     pokedex = pokedict()
     try:
-        dex = pokedex["data"][pokemon_name]["pokedex"]
+        dex = pokedex["data"][pokemon_name]["branch_code"]
     except KeyError:
         dex = -1
     return dex
@@ -89,8 +90,6 @@ def formatting(page):
     # Remove the formatting that clogs up the pipes.
     for line in listOfLines:
         line = line.replace("|", ",").replace(" ", "").replace("%", "").lower()
-        line = re.sub(r"(pikachu([-A-Za-z]))", "pikachu", line)
-        # print(line)
         if line.startswith(","):
             line = line[1:-2]
             outlist.append(line)

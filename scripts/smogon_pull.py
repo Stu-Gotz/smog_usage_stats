@@ -250,7 +250,7 @@ if __name__ == "__main__":
     # update()
     # cs = Contact_Smogon(["2022"], ["08"], ["8"], ["uu"], ["1630"])
     # cs = Contact_Smogon([YEARS[0]], MONTHS[1:4], GENS, TIERS, RATINGS)
-    cs = Contact_Smogon(YEARS, MONTHS, GENS, TIERS, RATINGS)
+    cs = Contact_Smogon(YEARS[4:], MONTHS, GENS, TIERS, RATINGS)
     cs.find_stats("csv")
     # cs.find_stats("json")
     

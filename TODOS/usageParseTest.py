@@ -155,15 +155,15 @@ for rec in recs:
         newname += '-alola'
         rec['name'] = newname
     elif 'galarian' in rec['name']:
-        newname = rec['name'].strip('galarian ')
+        newname = rec['name'].replace('galarian ', "")
         newname += '-galar'
         rec['name'] = newname
     elif 'hisuian' in rec['name']:
-        newname = rec['name'].strip('hisuian ')
+        newname = rec['name'].replace('hisuian ', "")
         newname += '-hisui'
         rec['name'] = newname
     elif 'paldean' in rec['name']:
-        newname = rec['name'].strip('paldean ')
+        newname = rec['name'].replace('paldean ', "")
         newname += '-paldea'
         rec['name'] = newname
 
@@ -188,7 +188,11 @@ dexidx = []
 path = os.path.join(os.getcwd(), r"data\csv")
 for f in os.listdir(path):
     fpath = os.path.abspath(os.path.join(path, f))
-    if fpath.endswith('cap.csv') or fpath.endswith('mixandmega.csv'):
+    print(fpath)
+    if os.path.getsize(fpath) < 1024:
+        os.remove(fpath)
+        continue
+    if (fpath.endswith('cap.csv') or fpath.endswith('mixandmega.csv') or fpath.endswith('1v1.csv') or fpath.endswith('customgame.csv')):
         continue
     else:
 
@@ -197,5 +201,12 @@ for f in os.listdir(path):
         for i, row in df.iterrows():
 
             p = row['pokemon']
-            df.at[i, 'dex'] = dex[p]["pokedex"]
-        
+            if p == 'pikachu-original':
+                p = 'pikachu'
+                df.at[i, 'pokemon'] = 'pikachu'
+            elif '-gmax' in p:
+                p = p.replace('-gmax', "")
+                df.at[i, 'dex'] = dex[p]["branch_code"]
+                continue
+            df.at[i, 'dex'] = dex[p]["branch_code"]
+            df.to_csv(fpath, index=False)
