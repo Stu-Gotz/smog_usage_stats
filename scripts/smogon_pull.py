@@ -12,7 +12,8 @@ from _utils import * # I know this is bad practice, but I couldn't be bothered t
 
 """
 TODO:
-
+- rewrite code to be better
+    - set functions to set search params. default includes all. initialise each type to false, if true run function to set to user input
 - branch for monotype
 - write update functions to require no input and run from a .sh or batch file
 - anything else i think of
@@ -35,13 +36,13 @@ GENS = ["9", "8", "7", "6", "5", "4", "3", "2", "1"]
 TIERS = [
     "ou",
     "ubers",
-    "1v1",
+    # "1v1",
     "pu",
     "nu",
     "lc",
     "uu",
     "ru",
-    "customgame",
+    # "customgame",
     "2v2doubles",
     "doubles",
     "anythinggoes",
@@ -55,7 +56,7 @@ TIERS = [
     "budoubles",
     "busingles",
     "camomons",
-    "cap",
+    # "cap",
     "challengecup",
     "challengecup1v1",
     "doublescustomgame",
@@ -66,7 +67,7 @@ TIERS = [
     "inversebattle",
     "lcuu",
     "linked",
-    "mixandmega",
+    # "mixandmega",
     "monotype",
     "natureswap",
     "nfe",
@@ -186,7 +187,7 @@ class Contact_Smogon:
         if not (( output_type.lower() == "json" ) or ( output_type.lower() == "csv" )):
             raise ValueError("Please specify 'json' or leave blank 'csv' format.")
         else:
-            for url in self._urls:
+            for url in self.urls():
                 print(url)
                 # Do the request to get data page
                 try:

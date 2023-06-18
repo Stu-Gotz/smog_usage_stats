@@ -2340,11 +2340,11 @@
       "speed": 70,
       "total": 465
     },
-    "farfetch'd": {
+    "farfetchd": {
       "pokedex": 83,
       "branch_code": "83_0",
-      "original_name": "farfetch'd",
-      "name": "farfetch'd",
+      "original_name": "farfetchd",
+      "name": "farfetchd",
       "type_1": "normal",
       "type_2": "flying",
       "ability_1": "keen eye",
@@ -2360,11 +2360,11 @@
       "speed": 60,
       "total": 377
     },
-    "farfetch'd-galar": {
+    "farfetchd-galar": {
       "pokedex": 83,
       "branch_code": "83_1",
-      "original_name": "farfetch'd",
-      "name": "farfetch'd-galar",
+      "original_name": "farfetchd",
+      "name": "farfetchd-galar",
       "type_1": "fighting",
       "type_2": "",
       "ability_1": "steadfast",
@@ -18260,11 +18260,11 @@
       "speed": 93,
       "total": 476
     },
-    "oricorio-pa'u": {
+    "oricorio-pau": {
       "pokedex": 741,
       "branch_code": "741_2",
       "original_name": "oricorio",
-      "name": "oricorio-pa'u",
+      "name": "oricorio-pau",
       "type_1": "psychic",
       "type_2": "flying",
       "ability_1": "dancer",
@@ -21300,11 +21300,11 @@
       "speed": 30,
       "total": 510
     },
-    "sirfetch'd": {
+    "sirfetchd": {
       "pokedex": 865,
       "branch_code": "865_0",
-      "original_name": "sirfetch'd",
-      "name": "sirfetch'd",
+      "original_name": "sirfetchd",
+      "name": "sirfetchd",
       "type_1": "fighting",
       "type_2": "",
       "ability_1": "steadfast",
@@ -22067,7 +22067,7 @@
       "name": "regidrago",
       "type_1": "dragon",
       "type_2": "",
-      "ability_1": "dragon's maw",
+      "ability_1": "dragons maw",
       "ability_2": "",
       "ability_hidden": "",
       "mega_evolution_flag": "",
