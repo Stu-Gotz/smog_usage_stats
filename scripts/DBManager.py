@@ -65,6 +65,9 @@ class SQLManager:
     def create_cursor(self):
         '''
         If the user hasn't connected manually, no self.conn exists, so we must call it and create the cursor from default values.
+
+        This function is here because its good practice to close the cursor after executing a command. So it is called at the top of a 
+        SQL-performing function and closed after it. 
         '''
         if self.conn:
             conn = self.conn
@@ -74,6 +77,7 @@ class SQLManager:
         curr = conn.cursor()
         return curr
     
+    @staticmethod
     def __close_cursor(self, cursor):
         cursor.close()
     # -------------------------------
@@ -134,7 +138,7 @@ class SQLManager:
     # -------------------------------
     def close_connection(self):
         self.conn.close()
-        print("Connection to server closed.")
+        print("Connection to database closed.")
 
     # -------------------------------
     # Pokedex builder
