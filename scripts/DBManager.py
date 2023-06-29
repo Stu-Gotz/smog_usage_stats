@@ -5,7 +5,8 @@ from psycopg2.extensions import AsIs
 from os.path import join, dirname
 from dotenv import load_dotenv
 import json
-
+import datetime
+from dateutil.relativedelta import relativedelta
 '''
 TODOS:
 
@@ -77,20 +78,40 @@ class SQLManager:
         curr = conn.cursor()
         return curr
     
-    @staticmethod
     def __close_cursor(self, cursor):
         cursor.close()
+
+    def set_dates(self):
+        # Due to the nature of stats collection, it will always be 1 month behind
+        # the current month, so we set the current one to one month ago and use
+        # the relativedelta() function to get the next two previous months
+        # i.e. if it is currently April, current, previous and tma will 
+        # be March, Feb and Jan, respectively
+        self.current = (datetime.datetime.now() - relativedelta(months=1))
+        self.previous = (self.current - relativedelta(months=1)).strftime('%Y-%m')
+        self.tma = (self.current - relativedelta(months=2)).strftime('%Y-%m')
+        self.current = self.current.strftime('%Y-%m') #change to a string after getting other months
+        print(self.current)
+        print(self.previous)
+        print(self.tma)
+    
     # -------------------------------
     # Create the tables for the database
     # -------------------------------
-    # def construct_tables(self):
     def construct_tables(self):
         master_file = open(self.__FILE)
         columns = master_file.readline().strip().split(",")
 
         cursor = self.create_cursor();
-        sql_cmd = "DROP TABLE IF EXISTS " + self.table_name + ";\n"
-        sql_cmd += "CREATE TABLE " + self.table_name + " (\n"
+
+        # I'm absolutely sure there is a better way to do this, but 
+        # for the sake of this project, I am only keeping a rolling 3 months of data for space-saving
+        # constraints and practical reasons (does what was happening 6 months ago influence now? not really
+        # when it comes to pokemon)
+        sql_cmd = "DROP TABLE IF EXISTS TMAUsage; \n"
+        sql_cmd += "ALTER TABLE IF EXISTS PrevUsage RENAME TO TMAUsage;\n"
+        sql_cmd += "ALTER TABLE IF EXISTS CurrUsage RENAME TO PrevUsage;\n"
+        sql_cmd += "CREATE TABLE CurrUsage (\n"
 
         sql_cmd += (
             "id_ SERIAL PRIMARY KEY,\n"
@@ -185,9 +206,18 @@ class SQLManager:
 
 
 if __name__ == "__main__":
+    import datetime
+
     SqlManager = SQLManager()
-    SqlManager.connect(db_name="UsageStats")
-    SqlManager.pokedex()
+    # SqlManager.connect(db_name="UsageStats")
+    SqlManager.set_dates()
+    # # SqlManager.pokedex()
     # SqlManager.construct_tables()
-    # SqlManager.fill_tables()
-    SqlManager.close_connection()
+    # # SqlManager.fill_tables()
+    # SqlManager.close_connection()
+    # today = (datetime.datetime.now() - relativedelta(months=1))
+    # thismonth = (today - relativedelta(months=1)).strftime('%Y-%m')
+    # print(thismonth)
+    # for f in os.listdir(r"C:\dev\python\smog_usage_stats\data\csv"):
+    #     if f.startswith(thismonth):
+    #         print(f)

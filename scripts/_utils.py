@@ -95,6 +95,13 @@ def formatting(page):
             outlist.append(line)
     return outlist
 
+def reorganise_directory():
+    maindir = os.path.abspath('../data/')
+    destinations = ['current', 'previous', 'tma']
+    shutil.rmtree(os.path.join(maindir, destinations[-1]))
+    shutil.move(os.path.join(maindir, destinations[1]), os.path.join(maindir, destinations[-1]))
+    shutil.move(os.path.join(maindir, destinations[0]), os.path.join(maindir, destinations[1]))
+
 #---------------------------------
 # Creates the dataframe and saves to csv
 #---------------------------------
@@ -117,6 +124,7 @@ def create_data_structure(data_list, date, tier, save_as="csv"):
     # List to hold dicts to be turned into a dataframe/csv or json
     dict_list = []
 
+    reorganise_directory()
     # Create the list of dictionaries
     for data in data_list:
         data_split = data.split(",")
@@ -128,10 +136,11 @@ def create_data_structure(data_list, date, tier, save_as="csv"):
                 data_dict[i] = data_dict[i].lower()
         dict_list.append(data_dict)
 
-    # Send to csv or json, based on what user prefers. Default is csv because its generally easier for python
+    # Send to csv or json, based on what user prefers. Default is 
+    # csv because its more comfortable 
     pokemon_df = pd.DataFrame(dict_list)
-    if save_as == "csv":
-        csv_path = os.path.join(__PATH, "data/csv/")
+    if save_as.lower() == "csv":
+        csv_path = os.path.join(__PATH, "data/current/")
         if not os.path.exists(csv_path):
             os.mkdir(csv_path)
 
@@ -142,21 +151,23 @@ def create_data_structure(data_list, date, tier, save_as="csv"):
             ),
             index=False,
         )
-    elif save_as == "json":
-        json_path = os.path.join(__PATH, "data/json/")
+    # this doesn't really have a purpose, but its there for future use in case
+    # JSON becomes a required options
+    # elif save_as.lower() == "json":
+    #     json_path = os.path.join(__PATH, "data/json/")
 
-        if not os.path.isdir(json_path):
-            os.mkdir(json_path)
+    #     if not os.path.isdir(json_path):
+    #         os.mkdir(json_path)
 
 
-        json_out = dict(
-            zip([dict_list[x]["rank"] for x in range(len(dict_list))], dict_list)
-        )
-        with open(
-            os.path.join(__PATH, f"data/json/{date}_{tier}.json"),
-            "w",
-        ) as f:
-            json.dump(json_out, f)
+    #     json_out = dict(
+    #         zip([dict_list[x]["rank"] for x in range(len(dict_list))], dict_list)
+    #     )
+    #     with open(
+    #         os.path.join(__PATH, f"data/json/{date}_{tier}.json"),
+    #         "w",
+    #     ) as f:
+    #         json.dump(json_out, f)
     return f"{date} {tier} file created as a {save_as}."
 
 #---------------------------------
@@ -170,7 +181,6 @@ def combine_all_csv():
     output = os.path.join(__PATH, "data/statsmaster.csv")
     fout = open(output, "w")
     for f in range(len(dir_list)):
-
         if f == 0:
             x = open(csv_path + dir_list[f])
             for line in x:
