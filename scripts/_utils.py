@@ -5,7 +5,7 @@ import time
 import shutil
 from datetime import datetime
 import pandas as pd
-import re
+from dateutil.relativedelta import relativedelta
 
 
 __BASE = r"https://www.smogon.com/stats/"
@@ -101,7 +101,15 @@ def reorganise_directory():
     shutil.rmtree(os.path.join(maindir, destinations[-1]))
     shutil.move(os.path.join(maindir, destinations[1]), os.path.join(maindir, destinations[-1]))
     shutil.move(os.path.join(maindir, destinations[0]), os.path.join(maindir, destinations[1]))
+    return
 
+def fill_current_folder():
+    present = datetime.strftime(datetime.now(), '%Y-%m')
+    current = datetime.strftime(present - relativedelta(months=1), '%Y-%m')
+    for filename in os.listdir(os.path.join(__PATH, '/data/csv')):
+         if filename.startswith(current):
+             shutil.copyfile(os.path.realpath(filename), os.path.join(__PATH, f'/data/current/{filename}'))
+    return
 #---------------------------------
 # Creates the dataframe and saves to csv
 #---------------------------------
@@ -123,8 +131,6 @@ def create_data_structure(data_list, date, tier, save_as="csv"):
 
     # List to hold dicts to be turned into a dataframe/csv or json
     dict_list = []
-
-    reorganise_directory()
     # Create the list of dictionaries
     for data in data_list:
         data_split = data.split(",")
@@ -140,7 +146,7 @@ def create_data_structure(data_list, date, tier, save_as="csv"):
     # csv because its more comfortable 
     pokemon_df = pd.DataFrame(dict_list)
     if save_as.lower() == "csv":
-        csv_path = os.path.join(__PATH, "data/current/")
+        csv_path = os.path.join(__PATH, "data/csv/")
         if not os.path.exists(csv_path):
             os.mkdir(csv_path)
 
@@ -168,7 +174,8 @@ def create_data_structure(data_list, date, tier, save_as="csv"):
     #         "w",
     #     ) as f:
     #         json.dump(json_out, f)
-    return f"{date} {tier} file created as a {save_as}."
+    # print(f"{date} {tier} file created as a {save_as}.")
+    return
 
 #---------------------------------
 # Merges all separate csvs to a single csv to feed to the db

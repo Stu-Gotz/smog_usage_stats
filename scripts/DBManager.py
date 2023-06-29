@@ -1,8 +1,6 @@
 import os
-import zipfile
 import psycopg2 as pg2
-from psycopg2.extensions import AsIs
-from os.path import join, dirname
+from os import path
 from dotenv import load_dotenv
 import json
 import datetime
@@ -20,8 +18,8 @@ Sanitization? I don't know if its required because I control the data flow. Will
 # -------------------------------
 # travels up a level to find the .env, then loads it below to 
 # allow access to environment vars for security
-dotenv_path = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", ".env")
+dotenv_path = path.abspath(
+    path.join(path.dirname(__file__), "..", ".env")
 )  
 load_dotenv(dotenv_path)
 
@@ -39,15 +37,24 @@ load_dotenv(dotenv_path)
 # -------------------------------
 class SQLManager:
     def __init__(self):
-        self.table_name = "smogon_usage_stats"
-        try:
-            self.__FILE = os.path.join(os.getcwd(), "data/statsmaster.csv")
-        except:
-            print("you haven't downloaded any stats")
+        self.__dirs = ('current', 'previous', 'tma')
+        self.__path = self.__set_path_variable();
+    
+    def __set_path_variable(self):
+        dirpath = path.join(os.getcwd(), 'data')
+        print(dirpath)
+        return dirpath
 
-    def connect(
-        self, db_name=False, user_name=False, pwd=False, hostname=False, port_num=False
-    ):
+    # This function exists to allow modification of db connection variables and establish a connection
+    # mostly because my credentials are different on my desktop and laptop, but also makes it flexible
+    # for other people to use, as its open source software, might as well make it easy.
+    def connect(self, 
+                db_name=False, 
+                user_name=False, 
+                pwd=False, 
+                hostname=False, 
+                port_num=False
+                ):
         connection = pg2.connect(
             database=db_name if db_name else os.environ.get("LOCAL_DATABASE"),
             user=user_name if user_name else os.environ.get("LOCAL_USER"),
@@ -73,8 +80,7 @@ class SQLManager:
         if self.conn:
             conn = self.conn
         else:
-            conn = self.connect()
-            self.conn = conn
+            self.conn = self.connect()
         curr = conn.cursor()
         return curr
     
@@ -99,8 +105,8 @@ class SQLManager:
     # Create the tables for the database
     # -------------------------------
     def construct_tables(self):
-        master_file = open(self.__FILE)
-        columns = master_file.readline().strip().split(",")
+        source_file = open(path.join(self.__path, 'statsmaster.csv'))
+        columns = source_file.readline().strip().split(",")
 
         cursor = self.create_cursor();
 
@@ -108,12 +114,8 @@ class SQLManager:
         # for the sake of this project, I am only keeping a rolling 3 months of data for space-saving
         # constraints and practical reasons (does what was happening 6 months ago influence now? not really
         # when it comes to pokemon)
-        sql_cmd = "DROP TABLE IF EXISTS TMAUsage; \n"
-        sql_cmd += "ALTER TABLE IF EXISTS PrevUsage RENAME TO TMAUsage;\n"
-        sql_cmd += "ALTER TABLE IF EXISTS CurrUsage RENAME TO PrevUsage;\n"
-        sql_cmd += "CREATE TABLE CurrUsage (\n"
 
-        sql_cmd += (
+        columns = (
             "id_ SERIAL PRIMARY KEY,\n"
             + columns[0]
             + " INTEGER,\n"
@@ -130,27 +132,37 @@ class SQLManager:
             + columns[6]
             + " FLOAT,\n"
             + columns[7]
-            + " INTEGER,\n"
+            + " VARCHAR(10),\n"
             + columns[8]
             + " VARCHAR(10),\n"
             + columns[9]
-            + " VARCHAR(50));"
+            + " VARCHAR(50)"
         )
+        sql_cmd = f"DROP TABLE IF EXISTS {self.__dirs[-1]}; \n"
+        sql_cmd += f"ALTER TABLE IF EXISTS {self.__dirs[1]} RENAME TO {self.__dirs[-1]};\n"
+        sql_cmd += f"ALTER TABLE IF EXISTS {self.__dirs[0]} RENAME TO {self.__dirs[1]};\n"
+        sql_cmd += f"CREATE TABLE {self.__dirs[0]} ({columns});\n"
+        sql_cmd += f"CREATE TABLE IF NOT EXISTS {self.__dirs[1]} ({columns});\n"
+        sql_cmd += f"CREATE TABLE IF NOT EXISTS {self.__dirs[-1]} ({columns});\n"
+
+        
         cursor.execute(sql_cmd)
         self.conn.commit()
-        master_file.close()
+        source_file.close()
         self.__close_cursor(cursor)
 
     # -------------------------------
     # Copy data from CSV files created in smogon_pull.py into database
     # -------------------------------.
-    def fill_tables(self):
+    def fill_table(self, table_name, directory):
         cursor = self.create_cursor();
-        master_file = open(self.__FILE, "r")
-        columns = tuple(master_file.readline().strip().split(","))
-        cursor.copy_from(master_file, self.table_name, columns=columns, sep=",")
-        self.conn.commit()
-        master_file.close()
+
+        for filename in os.listdir(directory):
+            with open(path.join(self.__path, '\\'.join([directory, filename])), 'r') as currentfile:
+                print(currentfile)
+                columns = tuple(currentfile.readline().strip().split(","))
+                cursor.copy_from(currentfile, table_name, columns=columns, sep=",")
+                self.conn.commit()
         self.__close_cursor(cursor)
         print("Tables updated with new data.")
 
@@ -164,7 +176,7 @@ class SQLManager:
     # -------------------------------
     # Pokedex builder
     # -------------------------------
-    def pokedex(self):
+    def create_pokedex_table(self):
         j = open(r"C:\dev\python\smog_usage_stats\data\reference\pokedex.json")
         dex = json.load(j)
 
@@ -204,15 +216,19 @@ class SQLManager:
 
         # print(dex)
 
+    def update_tables(self):
+        self.construct_tables()
+        for d in self.__dirs:
+            self.fill_table(d, path.join(self.__path, d))
+        self.close_connection()
+        return
 
 if __name__ == "__main__":
-    import datetime
 
     SqlManager = SQLManager()
-    # SqlManager.connect(db_name="UsageStats")
-    SqlManager.set_dates()
+    SqlManager.connect(db_name="UsageStats")
+    SqlManager.update_tables()
     # # SqlManager.pokedex()
-    # SqlManager.construct_tables()
     # # SqlManager.fill_tables()
     # SqlManager.close_connection()
     # today = (datetime.datetime.now() - relativedelta(months=1))
@@ -221,3 +237,4 @@ if __name__ == "__main__":
     # for f in os.listdir(r"C:\dev\python\smog_usage_stats\data\csv"):
     #     if f.startswith(thismonth):
     #         print(f)
+    # print(os.getcwd())

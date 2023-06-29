@@ -2,7 +2,6 @@
 # Imports
 # --------------------------------
 import os
-import sys
 import time
 import json
 import requests
@@ -188,7 +187,6 @@ class Contact_Smogon:
             raise ValueError("Please specify 'json' or leave blank 'csv' format.")
         else:
             for url in self.urls():
-                print(url)
                 # Do the request to get data page
                 try:
                     r = requests.get(url)
@@ -204,7 +202,6 @@ class Contact_Smogon:
                     src = url.split("/")
                     src = src[4:]
                     date = src[0]
-
                     gtr = src[1].strip(".txt")
                     tier = gtr.split("-")
                     tier = tier[0]
@@ -226,9 +223,10 @@ class Contact_Smogon:
                     time.sleep(3)
                 else:
                     pass
-
-        clear_temp_files()
-        combine_all_csv()
+            reorganise_directory()
+            fill_current_folder()
+            clear_temp_files()
+            combine_all_csv()
         return
 
 def update():
