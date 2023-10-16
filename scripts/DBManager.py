@@ -97,9 +97,9 @@ class SQLManager:
         self.previous = (self.current - relativedelta(months=1)).strftime('%Y-%m')
         self.tma = (self.current - relativedelta(months=2)).strftime('%Y-%m')
         self.current = self.current.strftime('%Y-%m') #change to a string after getting other months
-        print(self.current)
-        print(self.previous)
-        print(self.tma)
+        # print(self.current)
+        # print(self.previous)
+        # print(self.tma)
     
     # -------------------------------
     # Create the tables for the database
@@ -159,7 +159,7 @@ class SQLManager:
 
         for filename in os.listdir(directory):
             with open(path.join(self.__path, '\\'.join([directory, filename])), 'r') as currentfile:
-                print(currentfile)
+                # print(currentfile)
                 columns = tuple(currentfile.readline().strip().split(","))
                 cursor.copy_from(currentfile, table_name, columns=columns, sep=",")
                 self.conn.commit()
@@ -208,7 +208,7 @@ class SQLManager:
             insert_stmt = "INSERT INTO branchdex ({}) values {};".format(
                 ", ".join([c for c in columns]), val
             )
-            print(insert_stmt)
+            # print(insert_stmt)
             cursor.execute(insert_stmt)
         self.conn.commit();
         self.__close_cursor(cursor)

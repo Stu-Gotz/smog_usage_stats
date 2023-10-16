@@ -96,16 +96,20 @@ def formatting(page):
     return outlist
 
 def reorganise_directory():
-    maindir = os.path.abspath('../data/')
+    print(__PATH)
     destinations = ['current', 'previous', 'tma']
-    shutil.rmtree(os.path.join(maindir, destinations[-1]))
-    shutil.move(os.path.join(maindir, destinations[1]), os.path.join(maindir, destinations[-1]))
-    shutil.move(os.path.join(maindir, destinations[0]), os.path.join(maindir, destinations[1]))
+    print(os.path.join(__PATH, 'data', destinations[-1]))
+    shutil.rmtree(os.path.join(__PATH, 'data', destinations[-1]))
+    os.mkdir(os.path.join(__PATH, 'data', destinations[-1]))
+    shutil.move(os.path.join(__PATH, 'data', destinations[1]), os.path.join(__PATH, 'data', destinations[-1]))
+    os.mkdir(os.path.join(__PATH, 'data', destinations[1]))
+    shutil.move(os.path.join(__PATH, 'data', destinations[0]), os.path.join(__PATH, 'data', destinations[1]))
+    os.mkdir(os.path.join(__PATH, 'data', destinations[0]))
     return
 
 def fill_current_folder():
     present = datetime.strftime(datetime.now(), '%Y-%m')
-    current = datetime.strftime(present - relativedelta(months=1), '%Y-%m')
+    current = str(datetime.strftime(present - relativedelta(months=1), '%Y-%m'))
     for filename in os.listdir(os.path.join(__PATH, '/data/csv')):
          if filename.startswith(current):
              shutil.copyfile(os.path.realpath(filename), os.path.join(__PATH, f'/data/current/{filename}'))

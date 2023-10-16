@@ -1,8 +1,7 @@
-#import smogon_pull as SP
+import smogon_pull as SP
 import DBManager as DBM
 
-#SP.update()
-_DBM = DBM.DB_Manager()
-_DBM.construct_tables()
-_DBM.fill_tables()
-_DBM.close_db()
+# SP.update()
+_DBM = DBM.SQLManager()
+_DBM.connect(db_name="UsageStats")
+_DBM.update_tables()
