@@ -1,0 +1,10 @@
+Split into classes
+ - class SmogonQuery
+    :date finder
+    :query function
+ - class Formatter
+    :turn plaintext html to csv
+    :augment data with dex (branch code)
+ - class DB handler
+ - class to merge files
+Restructure the file tree to have current, previous and 2 months ago (TMA)
