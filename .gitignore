@@ -3,6 +3,5 @@ __pycache__/
 venv/
 temp/
 csv/
-TODOS/
 .env
 json/
