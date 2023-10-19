@@ -1,5 +1,5 @@
 import smogon_pull as SP
-import DBManager as DBM
+import deprecated.DBManager as DBM
 
 # SP.update()
 _DBM = DBM.SQLManager()
