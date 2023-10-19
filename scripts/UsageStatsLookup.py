@@ -2,6 +2,9 @@ from typing import Literal
 from Search import Search
 import requests
 import csv
+import os
+from os.path import dirname as up
+
 
 class StatsSearch(Search):
     def __init__(
@@ -13,17 +16,28 @@ class StatsSearch(Search):
         super().__init__(year, month, gen)
 
     def search(self) -> list[list]:
-        def remove_formatting(page: list) -> list[list]:
-            outlist = []
+        def remove_formatting(data: list) -> list[list]:
+            outlist = [
+                [
+                    "rank",
+                    "pokemon",
+                    "usage_pct",
+                    "raw_usage",
+                    "raw_pct",
+                    "real",
+                    "real_pct",
+                ]
+            ]
             # Remove the formatting from the webpage
             for line in data:
                 # remove all symbols and make lowercase
-                line = line.replace("|", ",").replace(" ", "").replace("%", "").lower() 
+                line = line.strip("\n")
+                line = line.replace("|", ",").replace(" ", "").replace("%", "").lower()
                 if line.startswith(","):
                     # remove leading and trailing commas
                     line = line[1:-1]
-                    #turns it from a list of strings toa 2-d array
-                    line = line.split(',')
+                    # turns it from a list of strings toa 2-d array
+                    line = line.split(",")
                     # add it to the list to be returned
                     outlist.append(line)
             return outlist
@@ -31,12 +45,26 @@ class StatsSearch(Search):
         res = requests.get(self.base)
         data = res.text
         data = data.split("\n")
-        data = remove_formatting(data[5:-2])
+        data = data[5:-2]
+        data = remove_formatting(data)
         return data
 
-    def save_output(self):
+    def save_output(self, data) -> None:
+        base_dir = up(up(__file__))
+        cache_dir = os.path.join(base_dir, "data\\cache")
 
-        return
+        if not os.path.exists((cache_dir)):
+            os.mkdir(cache_dir)
+        with open(
+            os.path.join(
+                cache_dir, f"{self.year}-{self.month}_gen{self.gen}{self.tier}.csv"
+            ),
+            "w",
+            newline="",
+        ) as file:
+            csvWriter = csv.writer(file, delimiter=",")
+            csvWriter.writerows(data)
+
 
 class BaseStatsSearch(StatsSearch):
     def __init__(
@@ -95,4 +123,9 @@ if __name__ == "__main__":
     search = BaseStatsSearch(2022, "08", 8, "ou")
     search.build_url()
     query = search.search()
-    print(query)
+    search.save_output(query)
+
+    # base_dir = up(up(__file__))
+    # cache_dir = os.path.join(base_dir, "data\\cache")
+    # print(cache_dir)
+    pass
