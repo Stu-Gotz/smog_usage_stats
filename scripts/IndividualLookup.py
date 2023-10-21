@@ -58,12 +58,7 @@ class BaseChaosSearch(ChaosSearch):
         self._tier = value
 
     def build_url(self):
-        rating = 1630
-
-        if self.tier == "ou":
-            rating = 1695
-
-        self.base += f"gen{self.gen}{self.tier}-{rating}.json"
+        self.base += f"gen{self.gen}{self.tier}-1500.json"
 
 
 class MonotypeChaosSearch(ChaosSearch):
@@ -89,8 +84,7 @@ class MonotypeChaosSearch(ChaosSearch):
         self._typing = value
 
     def build_url(self):
-        rating = 1500
-        self.base += f"gen{self.gen}monotype-mono{self.typing}-{rating}.json"
+        self.base += f"gen{self.gen}monotype-mono{self.typing}-1500.json"
 
 #this is to search stats individually, but its a bit more involved, a WIP
 class IndividualStatsLookup(BaseStatsSearch):
@@ -104,25 +98,7 @@ class IndividualStatsLookup(BaseStatsSearch):
         super().__init__(year, month, gen, tier)
         
     def build_url(self):
-        def vintage_stats(year, month, gen, tier):
-            print("checking old urls")
-            r = requests.get(f"https://www.smogon.com/stats/{year}-{month}/")
-            soup = BeautifulSoup(r.text, "html.parser")
-            anchors = soup.find_all("a")
-
-            tiers = set()
-            for a in anchors[6:]:
-                text = a.text
-                text = text.strip(".txt").split("-")[0]
-                tiers.add(text)
-
-            if tier in tiers:
-                return f"{tier}-1500.txt"
-            elif f"gen{gen}{tier}" in tiers:
-                return f"gen{gen}{tier}-1500.txt"
-            else:
-                return "No data available for this tier on this date."
-
+        
         ###NOTES:
         #   Before 2017-06, there is some weird fuckery with how stats are stored and labeled
         #       Basically no gen6 data before.
@@ -136,7 +112,7 @@ class IndividualStatsLookup(BaseStatsSearch):
 
         if int(self.year) <= 2017:
             if self.month in ["01", "02", "03", "04", "05", "06"]:
-                url_to_append = vintage_stats(
+                url_to_append = self.vintage_stats(
                     self.year, self.month, self.gen, self.tier
                 )
                 print(url_to_append)

@@ -16,7 +16,7 @@ class StatsSearch(Search):
         super().__init__(year, month, gen)
 
     def search(self) -> list[list]:
-        
+        print(self.base)
         # send the request to get the data
         res = requests.get(self.base)
         #get the text if there is any (should add a check in here)
@@ -29,6 +29,27 @@ class StatsSearch(Search):
         data = self.remove_formatting(data)
         
         return data
+    
+    
+    def vintage_stats(self, year, month, gen, tier):
+            print("checking old urls")
+            r = requests.get(f"https://www.smogon.com/stats/{year}-{month}/")
+            soup = BeautifulSoup(r.text, "html.parser")
+            anchors = soup.find_all("a")
+
+            tiers = set()
+            for a in anchors[6:]:
+                text = a.text
+                text = text.strip(".txt").split("-")[0]
+                tiers.add(text)
+
+            if tier in tiers:
+                return f"{tier}-1500.txt"
+            elif f"gen{gen}{tier}" in tiers:
+                return f"gen{gen}{tier}-1500.txt"
+            else:
+                return "No data available for this tier on this date."
+
 
     def save_output(self, data) -> None:
         cache_dir = self.locate_cache_dir(__file__)
@@ -71,7 +92,19 @@ class BaseStatsSearch(StatsSearch):
 
         #check dates for valid tiers
         #since for now I am only looking up newer stats for database, it will be fine 
-        self.base += f'gen{self.gen}{self.tier}-1500.txt' 
+        if int(self.year) == 2017:
+            if self.month in ["01", "02", "03", "04", "05", "06"]:
+                ending = self.vintage_stats(self.year, self.month, self.gen, self.tier)
+                print(ending)
+                if ending.endswith('.txt'):
+                    self.base += ending
+        elif int(self.year) < 2017:
+            ending = self.vintage_stats(self.year, self.month, self.gen, self.tier)
+            print(ending)
+            if ending.endswith('.txt'):
+                self.base += ending
+        else:
+            self.base += f'gen{self.gen}{self.tier}-1500.txt' 
 
 class MonotypeStatsSearch(StatsSearch):
     def __init__(
@@ -97,7 +130,7 @@ class MonotypeStatsSearch(StatsSearch):
         self.base += f"gen{self.gen}monotype-mono{self.typing}-1500.txt"
 
 if __name__ == "__main__":
-    search = BaseStatsSearch(2017, "07", 6, "ou")
+    search = BaseStatsSearch(2015, "04", 6, "ou")
     search.build_url()
     query = search.search()
     search.save_output(query)
