@@ -94,35 +94,23 @@ class IndividualStatsLookup(BaseStatsSearch):
         month: Literal["Must be a two digit month string eg: '01' for Janu…"],
         gen: str | int,
         tier: str,
+        name: str
     ) -> None:
         super().__init__(year, month, gen, tier)
+        self.name = name
         
-    def build_url(self):
-        
-        ###NOTES:
-        #   Before 2017-06, there is some weird fuckery with how stats are stored and labeled
-        #       Basically no gen6 data before.
-        #       lots of tiers without gen{gen}tier prefix (eg: 'ou' 'uu' etc)
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, value):
+        self._name = value
+    
+    def find_individual_statistics(self):
+        # do something to search through data
+        return
 
-        #   Will need:
-        #       conditional to check date
-        #       method for 2017-06 & before
-        #       from there should be same
-        #       methods for old and new format should return string for self.base
-
-        if int(self.year) <= 2017:
-            if self.month in ["01", "02", "03", "04", "05", "06"]:
-                url_to_append = self.vintage_stats(
-                    self.year, self.month, self.gen, self.tier
-                )
-                print(url_to_append)
-                if url_to_append.endswith(".txt"):
-                    self.base += url_to_append
-                else:
-                    raise Exception("Invalid URL")
-            else:
-                self.base += f"gen{self.gen}{self.tier}-1500.txt"
-        print(self.base)
 
 
 if __name__ == "__main__":

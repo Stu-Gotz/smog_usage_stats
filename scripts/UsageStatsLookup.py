@@ -7,7 +7,8 @@ from bs4 import BeautifulSoup
 from Validation import Validations
 
 
-class StatsSearch(Search):
+class StatsSearch(Search):  
+
     def __init__(
         self,
         year: str | int,
@@ -15,6 +16,7 @@ class StatsSearch(Search):
         gen: str | int,
     ) -> None:
         super().__init__(year, month, gen)
+        self.ending = None
 
     ### NOT USED IN CHAOS BRANCH SEARCHES ###
     def remove_formatting(self, data: list) -> list[list]:
@@ -57,22 +59,37 @@ class StatsSearch(Search):
         data = self.remove_formatting(data)
 
         return data
+    
+    def search_and_save(self) -> None:
+        data = self.search()
+        if self.ending:
+            ending = self.ending.split('-')[0]
+            self.save_output(data, ending)
+        else:
+            print("No data was saved.")
+            return None
 
-    def vintage_stats(self, year, month, gen, tier):
+    def vintage_stats(self, year, month, gen, tier) -> str:
         r = requests.get(f"https://www.smogon.com/stats/{year}-{month}/")
         soup = BeautifulSoup(r.text, "html.parser")
         anchors = soup.find_all("a")
 
-        tiers = set(a.text.strip(".txt").split("-")[0] for a in anchors[6:])
+        tiers = tuple(set(a.text.strip(".txt").split("-")[0] for a in anchors[6:]))
 
-        if tier in tiers:
-            return f"{tier}-1500.txt"
-        elif f"gen{gen}{tier}" in tiers:
-            return f"gen{gen}{tier}-1500.txt"
-        else:
-            return "No data available for this tier on this date."
+        try:
+            print('trying basic')
+            if tiers.index(f'gen{gen}{tier}'):
+                return f"gen{gen}{tier}-1500.txt"
+        except(ValueError):
+            print('trying backup')
+            try:
+                if (tiers.index(tier) and tier == (6 | 7)):
+                    return f"{tier}-1500.txt"
+            except(ValueError):
+                return "Nothing found."
 
-    def save_output(self, data) -> None:
+
+    def save_output(self, data: list[list], ending: str) -> None:
         cache_dir = self.locate_cache_dir(__file__)
 
         if not os.path.exists((cache_dir)):
@@ -80,7 +97,7 @@ class StatsSearch(Search):
         # make the document
         with open(
             os.path.join(
-                cache_dir, f"{self.year}-{self.month}_gen{self.gen}{self.tier}.csv"
+                cache_dir, f"{self.year}-{self.month}_{ending}.csv"
             ),
             "w",
             newline="",
@@ -90,6 +107,8 @@ class StatsSearch(Search):
 
 
 class BaseStatsSearch(StatsSearch):
+    '''        tier (str): string of tier to be queried.'''
+    __doc__ = Search.__doc__ + __doc__
     def __init__(
         self,
         year: str | int,
@@ -99,7 +118,7 @@ class BaseStatsSearch(StatsSearch):
     ) -> None:
         super().__init__(year, month, gen)
         self.tier = tier.lower()
-        self.base = f"https://www.smogon.com/stats/{self.year}-{self.month}/"
+        self.base += f"{self.year}-{self.month}/"
 
     @property
     def tier(self) -> str:
@@ -118,17 +137,25 @@ class BaseStatsSearch(StatsSearch):
         # since for now I am only looking up newer stats for database, it will be fine
         if validator.validate():
             if Validations.is_modern_format(validation_object):
-                self.base += f"gen{self.gen}{self.tier}-1500.txt"
+                ending = f"gen{self.gen}{self.tier}-1500.txt"
+                self.ending = ending
+                self.base += ending
             else:
                 ending = self.vintage_stats(self.year, self.month, self.gen, self.tier)
+                print(ending)
                 # below can be deleted after validations are done
                 if ending.endswith(".txt"):
+                    self.ending = ending
                     self.base += ending
+                # else:
+                #     raise Exception('Invalid information supplied, check your parameters.')
         else:
             print("Something isn't correct.")
 
 
 class MonotypeStatsSearch(StatsSearch):
+    '''        tier (str): string of tier to be queried.'''
+    __doc__ = Search.__doc__ + __doc__
     def __init__(
         self,
         year: str | int,
@@ -138,7 +165,7 @@ class MonotypeStatsSearch(StatsSearch):
     ) -> None:
         super().__init__(year, month, gen)
         self.typing = typing.lower()
-        self.base = "https://www.smogon.com/stats/2022-11/monotype/"
+        self.base += f'{year}-{month}/monotype/'
 
     @property
     def typing(self) -> str:
@@ -153,10 +180,11 @@ class MonotypeStatsSearch(StatsSearch):
 
 
 if __name__ == "__main__":
-    search = BaseStatsSearch(2015, "07", 6, "ou")
+    search = BaseStatsSearch(2015, "09", 8, "ou")
     search.build_url()
-    query = search.search()
-    search.save_output(query)
+    # query = search.search()
+    # search.save_output(query)
+    search.search_and_save()
     # search.clear_cache()
 
     pass

@@ -2,10 +2,13 @@ from datetime import datetime
 
 
 class Validations:
-    def __init__(self, validation_object) -> None:
+    def __init__(self, validation_object: dict) -> None:
         self.validation_object = validation_object
 
-    def validate(self):
+    def validate(self) -> bool:
+        '''
+        Runs the validation checks, if any of them return False, this also returns False.
+        '''
         if not (self.is_correct_gen(self.validation_object)) or not (
             self.is_valid_date(self.validation_object)
         ):
@@ -15,7 +18,8 @@ class Validations:
             return True
 
     @staticmethod
-    def is_modern_format(validation_object: object) -> bool:
+    def is_modern_format(validation_object: dict) -> bool:
+        '''Checks if the date submitted uses the old non-standardized labeling or not. Anything before Jul 2017 uses non-standard.'''
         if (int(validation_object["date"].year) == 2017) and (
             validation_object["date"].month <= 6
         ):
@@ -26,7 +30,8 @@ class Validations:
         return True
 
     @staticmethod
-    def is_correct_gen(validation_object) -> bool:
+    def is_correct_gen(validation_object: dict) -> bool:
+        '''Checks if the generation is valid for the date submitted.'''
         cutoff_dates = {
             7: datetime.strptime("2016-11", "%Y-%m"),
             8: datetime.strptime("2020-11", "%Y-%m"),
@@ -45,7 +50,8 @@ class Validations:
             return False
 
     @staticmethod
-    def is_valid_date(validation_object):
+    def is_valid_date(validation_object: dict) -> bool:
+        '''Makes sure theres no date submitted before Nov 2014, as there is no data available before then.'''
         year = validation_object["date"].year
         month = validation_object["date"].month
 

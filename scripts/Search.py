@@ -4,8 +4,16 @@ import os
 import shutil
 from datetime import datetime
 
-
+#"Mega"-parent searching class. Everything contained within this class will be available,
+#but not necessarily used by child classes.
 class Search:
+    '''
+    Parent searcher class.
+        Params:
+            year (str or int): a string or integer year
+            month (str): two-digit string month
+            gen: (str or int): an integer for whichever Pokemon generation is being queried. 
+    '''
     def __init__(
         self,
         year: str | int,
@@ -16,6 +24,7 @@ class Search:
         self.month = month
         self.date = datetime.strptime(("-".join([str(year), month])), "%Y-%m")
         self.gen = gen
+        self.base = 'https://www.smogon.com/stats/'
 
     @property
     def year(self) -> str | int:
