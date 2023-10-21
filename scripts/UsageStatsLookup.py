@@ -3,8 +3,7 @@ from Search import Search
 import requests
 import csv
 import os
-from os.path import dirname as up
-import shutil
+from bs4 import BeautifulSoup
 
 
 class StatsSearch(Search):
@@ -61,20 +60,18 @@ class BaseStatsSearch(StatsSearch):
 
     @property
     def tier(self) -> str:
-        return self._tier
+        return self._tier.lower()
 
     @tier.setter
     def tier(self, value):
         self._tier = value
 
     def build_url(self):
-        rating = 1630
+        #Rating of 1500 is defined by Smogon as their target of a normal player
 
-        if self.tier == "ou":
-            rating = 1695
-
-        self.base += f"gen{self.gen}{self.tier}-{rating}.txt"
-
+        #check dates for valid tiers
+        #since for now I am only looking up newer stats for database, it will be fine 
+        self.base += f'gen{self.gen}{self.tier}-1500.txt' 
 
 class MonotypeStatsSearch(StatsSearch):
     def __init__(
@@ -82,15 +79,15 @@ class MonotypeStatsSearch(StatsSearch):
         year: str | int,
         month: Literal["Must be a two digit month string eg: '01' for Janu…"],
         gen: str | int,
-        typing: str,
+        typing: Literal["Must be string of type, such as 'fighting' or 'psychic'"],
     ) -> None:
         super().__init__(year, month, gen)
-        self.typing = typing
+        self.typing = typing.lower()
         self.base = "https://www.smogon.com/stats/2022-11/monotype/"
 
     @property
     def typing(self) -> str:
-        return self._typing
+        return self._typing.lower()
 
     @typing.setter
     def typing(self, value):
@@ -99,12 +96,13 @@ class MonotypeStatsSearch(StatsSearch):
     def build_url(self):
         self.base += f"gen{self.gen}monotype-mono{self.typing}-1500.txt"
 
-
 if __name__ == "__main__":
-    search = BaseStatsSearch(2022, "08", 8, "ou")
+    search = BaseStatsSearch(2017, "07", 6, "ou")
     search.build_url()
     query = search.search()
     search.save_output(query)
-    search.clear_cache()
+    # search.clear_cache()
 
+
+    
     pass

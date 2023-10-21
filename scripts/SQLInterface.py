@@ -102,7 +102,9 @@ class SQLInterface:
         self.close_cursor(cursor)
 
     def close_connection(self) -> None:
+        """Closes database connection."""
         self.conn.close()
 
-    def close_cursor(self, cursor: psycopg2.extensions.cursor) -> None:
+    def close_cursor(cursor: psycopg2.extensions.cursor) -> None:
+        """Closes cursor."""
         cursor.close()
