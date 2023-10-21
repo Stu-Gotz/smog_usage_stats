@@ -2,6 +2,7 @@ from typing import Literal
 from os.path import dirname as up
 import os
 import shutil
+from datetime import datetime
 
 
 class Search:
@@ -13,59 +14,37 @@ class Search:
     ) -> None:
         self.year = year
         self.month = month
+        self.date = datetime.strptime(("-".join([str(year), month])), "%Y-%m")
         self.gen = gen
 
     @property
     def year(self) -> str | int:
-        return self._years
+        return self._year
 
     @property
     def month(self) -> str:
-        return self._months
+        return self._month
 
     @property
     def gen(self) -> str | int:
-        return self._gens
+        return self._gen
 
     @year.setter
     def year(self, value):
-        self._years = value
+        self._year = value
 
     @month.setter
     def month(self, value):
-        self._months = value
+        self._month = value
 
     @gen.setter
     def gen(self, value):
-        self._gens = value
+        self._gen = value
 
-    ### NOT USED IN CHAOS BRANCH SEARCHES ###
-    def remove_formatting(self, data: list) -> list[list]:
-        # Set the column names first
-        outlist = [
-            [
-                "rank",
-                "pokemon",
-                "usage_pct",
-                "raw_usage",
-                "raw_pct",
-                "real",
-                "real_pct",
-            ]
-        ]
-        # Remove the formatting from the webpage
-        for line in data:
-            # remove all linebreaks,symbols and make lowercase
-            line = line.strip("\n")
-            line = line.replace("|", ",").replace(" ", "").replace("%", "").lower()
-            if line.startswith(","):
-                # remove leading and trailing commas
-                line = line[1:-1]
-                # turns it from a list of strings toa 2-d array
-                line = line.split(",")
-                # add it to the list to be returned
-                outlist.append(line)
-        return outlist
+    def create_validation_object(self):
+        this = vars(self)
+        validation_object = {k.replace("_", ""): v for k, v in this.items()}
+        return validation_object
 
     def locate_cache_dir(self, reference):
         base_dir = up(up(reference))
