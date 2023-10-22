@@ -58,7 +58,7 @@ class SQLInterface:
         curr = self.conn.cursor()
         return curr
 
-    def modify_tables(self) -> None:
+    def update_tables(self) -> None:
         db_names = ("current", "previous", "tma")
         columns = (
             "id_ SERIAL PRIMARY KEY,\n"

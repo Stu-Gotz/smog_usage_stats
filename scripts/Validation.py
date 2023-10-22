@@ -9,10 +9,9 @@ class Validations:
         '''
         Runs the validation checks, if any of them return False, this also returns False.
         '''
-        if not (self.is_correct_gen(self.validation_object)) or not (
-            self.is_valid_date(self.validation_object)
+        if not (self._is_correct_gen(self.validation_object)) or not (
+            self._is_valid_date(self.validation_object)
         ):
-            # return True
             return False
         else:
             return True
@@ -23,14 +22,13 @@ class Validations:
         if (int(validation_object["date"].year) == 2017) and (
             validation_object["date"].month <= 6
         ):
-            print("no no no")
             return False
         elif int(validation_object["date"].year) < 2017:
             return False
         return True
 
     @staticmethod
-    def is_correct_gen(validation_object: dict) -> bool:
+    def _is_correct_gen(validation_object: dict) -> bool:
         '''Checks if the generation is valid for the date submitted.'''
         cutoff_dates = {
             7: datetime.strptime("2016-11", "%Y-%m"),
@@ -50,7 +48,7 @@ class Validations:
             return False
 
     @staticmethod
-    def is_valid_date(validation_object: dict) -> bool:
+    def _is_valid_date(validation_object: dict) -> bool:
         '''Makes sure theres no date submitted before Nov 2014, as there is no data available before then.'''
         year = validation_object["date"].year
         month = validation_object["date"].month
