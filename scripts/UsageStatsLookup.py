@@ -3,12 +3,11 @@ from Search import Search
 import requests
 import csv
 import os
-from bs4 import BeautifulSoup
+
 from Validation import Validations
 
 
-class StatsSearch(Search):  
-
+class StatsSearch(Search):
     def __init__(
         self,
         year: str | int,
@@ -46,52 +45,8 @@ class StatsSearch(Search):
                 outlist.append(line)
         return outlist
     
-    def _save_output(self, data: list[list], ending: str) -> None:
-        cache_dir = self.locate_cache_dir(__file__)
-
-        if not os.path.exists((cache_dir)):
-            os.mkdir(cache_dir)
-        # make the document
-        with open(
-            os.path.join(
-                cache_dir, f"{self.year}-{self.month}_{ending}.csv"
-            ),
-            "w",
-            newline="",
-        ) as file:
-            csvWriter = csv.writer(file, delimiter=",")
-            csvWriter.writerows(data)
-
-    def search(self) -> list[list]:
-        '''
-        Searches the smogon stats repository and returns a list of lists.
-        '''
-        # send the request to get the data
-        res = requests.get(self.base)
-        # get the text if there is any (should add a check in here)
-        data = res.text
-        # send each "unit" of information to a list by splitting on linebreaks
-        data = data.split("\n")
-        # truncate to get rid of the non-relevant prefixes and last two lines of styling
-        data = data[5:-2]
-        # remove the formatting
-        data = self._remove_formatting(data)
-
-        return data
-    
-    def search_and_save(self) -> None:
-        '''
-        Searches the smogon stats repo and saves files to system.
-        '''
-        data = self.search()
-        if self.ending:
-            ending = self.ending.split('-')[0]
-            self._save_output(data, ending)
-        else:
-            print("No data was saved.")
-            return None
-
-    def _vintage_stats(self, year, month, gen, tier) -> str:
+    @staticmethod
+    def _vintage_search(year, month, gen, tier) -> str:
         r = requests.get(f"https://www.smogon.com/stats/{year}-{month}/")
         soup = BeautifulSoup(r.text, "html.parser")
         anchors = soup.find_all("a")
@@ -108,11 +63,48 @@ class StatsSearch(Search):
             except(ValueError):
                 return "Nothing found."
 
+    def _save_output(
+        self, data: list[list], ending: str, savepath: str | os.PathLike = None
+    ) -> None:
+        if savepath:
+            cache_dir = os.path.join("os.path.dirname(__file__)", savepath)
+        else:
+            cache_dir = self.locate_cache_dir(__file__)
+
+        if not os.path.exists((cache_dir)):
+            os.mkdir(cache_dir)
+        # make the document
+        with open(
+            os.path.join(cache_dir, f"{self.year}-{self.month}_{ending}.csv"),
+            "w",
+            newline="",
+        ) as file:
+            csvWriter = csv.writer(file, delimiter=",")
+            csvWriter.writerows(data)
+
+    def search(self) -> list[list]:
+        """
+        Searches the smogon stats repository and returns a list of lists.
+        """
+        # send the request to get the data
+        res = requests.get(self.base)
+        # get the text if there is any (should add a check in here)
+        data = res.text
+        # send each "unit" of information to a list by splitting on linebreaks
+        data = data.split("\n")
+        # truncate to get rid of the non-relevant prefixes and last two lines of styling
+        data = data[5:-2]
+        # remove the formatting
+        data = self._remove_formatting(data)
+
+        return data
 
 
 class BaseStatsSearch(StatsSearch):
-    '''        tier (str): string of tier to be queried.'''
+    """>tier (str): string of tier to be queried."""
+
     __doc__ = Search.__doc__ + __doc__
+
     def __init__(
         self,
         year: str | int,
@@ -147,7 +139,9 @@ class BaseStatsSearch(StatsSearch):
                 self.ending = ending
                 self.base += ending
             else:
-                ending = self._vintage_stats(self.year, self.month, self.gen, self.tier)
+                ending = self._vintage_search(
+                    self.year, self.month, self.gen, self.tier
+                )
                 print(ending)
                 # below can be deleted after validations are done
                 if ending.endswith(".txt"):
@@ -160,8 +154,10 @@ class BaseStatsSearch(StatsSearch):
 
 
 class MonotypeStatsSearch(StatsSearch):
-    '''        tier (str): string of tier to be queried.'''
+    """>typing (str): string of type to be queried."""
+
     __doc__ = Search.__doc__ + __doc__
+
     def __init__(
         self,
         year: str | int,
@@ -171,7 +167,7 @@ class MonotypeStatsSearch(StatsSearch):
     ) -> None:
         super().__init__(year, month, gen)
         self.typing = typing.lower()
-        self.base += f'{year}-{month}/monotype/'
+        self.base += f"{year}-{month}/monotype/"
 
     @property
     def typing(self) -> str:

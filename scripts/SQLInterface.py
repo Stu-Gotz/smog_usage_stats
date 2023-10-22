@@ -2,7 +2,10 @@ import os
 import psycopg2
 from dotenv import load_dotenv
 
-load_dotenv()
+try:
+    load_dotenv()
+except:
+    pass
 
 _COLUMNS = (
     "rank",
@@ -16,25 +19,29 @@ _COLUMNS = (
 
 
 class SQLInterface:
-    def __init__(self, db_host, db_name, db_user, db_port, db_password) -> None:
-        self.conn = psycopg2.connect(
-            dbname=db_name,
-            user=db_user,
-            password=db_password,
-            port=db_port,
-            host=db_host,
-        )
-        self.cur = self.conn.cursor()
+    def __init__(
+        self,
+        db_name: str = None,
+        username: str = None,
+        pwd: str = None,
+        host: str = None,
+        port: str = None,
+    ) -> None:
+        self.db_name = db_name
+        self.username = username
+        self.pwd = pwd
+        self.host = host
+        self.port = port
+        self.conn = self.connect(db_name, username, pwd, host, port)
+        self.cur = self.conn.cursor() if self.conn else None
 
-    def connect(
-        self, db_name=False, user_name=False, pwd=False, hostname=False, port_num=False
-    ):
+    def connect(self):
         connection = psycopg2.connect(
-            database=db_name if db_name else os.environ.get("LOCAL_DATABASE"),
-            user=user_name if user_name else os.environ.get("LOCAL_USER"),
-            password=pwd if pwd else os.environ.get("LOCAL_PASSWORD"),
-            host=hostname if hostname else os.environ.get("LOCAL_HOST"),
-            port=port_num if port_num else os.environ.get("LOCAL_PORT"),
+            database=self.dbname if self.db_name else os.environ.get("LOCAL_DATABASE"),
+            user=self.username if self.username else os.environ.get("LOCAL_USER"),
+            password=self.pwd if self.pwd else os.environ.get("LOCAL_PASSWORD"),
+            host=self.host if self.host else os.environ.get("LOCAL_HOST"),
+            port=self.port_num if self.port else os.environ.get("LOCAL_PORT"),
         )
 
         if connection:
@@ -51,9 +58,7 @@ class SQLInterface:
         This function is here because its good practice to close the cursor after executing a command. So it is called at the top of a
         SQL-performing function and closed after it.
         """
-        if self.conn:
-            conn = self.conn
-        else:
+        if not self.conn:
             self.conn = self.connect()
         curr = self.conn.cursor()
         return curr
@@ -95,6 +100,7 @@ class SQLInterface:
     def load_data_to_table(self, target_table: str, source: str | os.PathLike) -> None:
         cursor = self.create_cursor()
 
+        source = os.path.join(os.path.dirname(os.path.dirname(__file__)), source)
         with open(source) as truth:
             next(truth)
             cursor.copy_from(truth, target_table, columns=_COLUMNS, sep=",")
