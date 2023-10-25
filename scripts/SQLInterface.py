@@ -15,6 +15,8 @@ _COLUMNS = (
     "raw_pct",
     "real",
     "real_pct",
+    "date",
+    "tier"
 )
 
 
@@ -87,17 +89,21 @@ class SQLInterface:
             + _COLUMNS[5]
             + " INTEGER,\n"
             + _COLUMNS[6]
-            + " FLOAT"
+            + " FLOAT, \n"
+            + _COLUMNS[7]
+            + " VARCHAR(50), \n"
+            + _COLUMNS[8]
+            + " VARCHAR(50)"
         )
 
         cursor = self._create_cursor()
 
         sql_cmd = f"DROP TABLE IF EXISTS {db_names[-1]}; \n"
-        sql_cmd += f"ALTER TABLE IF EXISTS {db_names[1]} RENAME TO {db_names[-1]};\n"
-        sql_cmd += f"ALTER TABLE IF EXISTS {db_names[0]} RENAME TO {db_names[1]};\n"
+        sql_cmd += f"DROP TABLE IF EXISTS {db_names[1]};\n"
+        sql_cmd += f"DROP TABLE IF EXISTS {db_names[0]};\n"
         sql_cmd += f"CREATE TABLE {db_names[0]} ({columns});\n"
-        sql_cmd += f"CREATE TABLE IF NOT EXISTS {db_names[1]} ({columns});\n"
-        sql_cmd += f"CREATE TABLE IF NOT EXISTS {db_names[-1]} ({columns});\n"
+        sql_cmd += f"CREATE TABLE {db_names[1]} ({columns});\n"
+        sql_cmd += f"CREATE TABLE {db_names[-1]} ({columns});\n"
 
         cursor.execute(sql_cmd)
         self.conn.commit()

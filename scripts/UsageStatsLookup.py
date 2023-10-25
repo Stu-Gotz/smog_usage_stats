@@ -30,6 +30,8 @@ class StatsSearch(Search):
                 "raw_pct",
                 "real",
                 "real_pct",
+                "date",
+                "tier"
             ]
         ]
         # Remove the formatting from the webpage
@@ -42,6 +44,9 @@ class StatsSearch(Search):
                 line = line[1:-1]
                 # turns it from a list of strings toa 2-d array
                 line = line.split(",")
+                line.append(f'{self.year}-{self.month}')
+                line.append(f'gen{self.gen}{self.tier}')
+
                 # add it to the list to be returned
                 outlist.append(line)
         return outlist
