@@ -3,7 +3,8 @@ from Search import Search
 import requests
 import csv
 import os
-
+from bs4 import BeautifulSoup
+from os.path import dirname as up
 from Validation import Validations
 
 
@@ -44,7 +45,7 @@ class StatsSearch(Search):
                 # add it to the list to be returned
                 outlist.append(line)
         return outlist
-    
+
     @staticmethod
     def _vintage_search(year, month, gen, tier) -> str:
         r = requests.get(f"https://www.smogon.com/stats/{year}-{month}/")
@@ -54,33 +55,38 @@ class StatsSearch(Search):
         tiers = tuple(set(a.text.strip(".txt").split("-")[0] for a in anchors[6:]))
 
         try:
-            if tiers.index(f'gen{gen}{tier}'):
+            if tiers.index(f"gen{gen}{tier}"):
                 return f"gen{gen}{tier}-1500.txt"
-        except(ValueError):
+        except ValueError:
             try:
-                if (tiers.index(tier) and tier == (6 | 7)):
+                if tiers.index(tier) and tier == (6 | 7):
                     return f"{tier}-1500.txt"
-            except(ValueError):
+            except ValueError:
                 return "Nothing found."
 
     def _save_output(
-        self, data: list[list], ending: str, savepath: str | os.PathLike = None
+        self, data: list[list], ending: str, pathname: str | os.PathLike = None
     ) -> None:
-        if savepath:
-            cache_dir = os.path.join("os.path.dirname(__file__)", savepath)
+        if pathname:
+            cache_dir = os.path.join(f"{up(up((__file__)))}/data/", pathname)
         else:
             cache_dir = self.locate_cache_dir(__file__)
 
         if not os.path.exists((cache_dir)):
             os.mkdir(cache_dir)
         # make the document
+        filepath = os.path.join(cache_dir, f"{self.year}-{self.month}_{ending}.csv")
         with open(
-            os.path.join(cache_dir, f"{self.year}-{self.month}_{ending}.csv"),
+            filepath,
             "w",
             newline="",
         ) as file:
             csvWriter = csv.writer(file, delimiter=",")
             csvWriter.writerows(data)
+
+        if os.stat(filepath).st_size < 100:
+            os.remove(filepath)
+            print(f"File {filepath} deleted as it contained no data.")
 
     def search(self) -> list[list]:
         """
@@ -185,7 +191,7 @@ if __name__ == "__main__":
     search = BaseStatsSearch(2015, "09", 4, "ou")
     # query = search.search()
     # search._save_output(query)
-    search.search_and_save()
+    search.search_and_save(pathname="current")
     # search.clear_cache()
 
     pass

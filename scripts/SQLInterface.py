@@ -33,15 +33,22 @@ class SQLInterface:
         self.host = host
         self.port = port
         self.conn = self.connect(db_name, username, pwd, host, port)
-        self.cur = self.conn.cursor() if self.conn else None
+        # self.cur = self.conn.cursor() if self.conn else None
 
-    def connect(self):
+    def connect(
+        self,
+        database: str = None,
+        user: str = None,
+        password: str = None,
+        host: str = None,
+        port: str = None,
+    ) -> psycopg2.extensions.connection:
         connection = psycopg2.connect(
-            database=self.dbname if self.db_name else os.environ.get("LOCAL_DATABASE"),
-            user=self.username if self.username else os.environ.get("LOCAL_USER"),
-            password=self.pwd if self.pwd else os.environ.get("LOCAL_PASSWORD"),
-            host=self.host if self.host else os.environ.get("LOCAL_HOST"),
-            port=self.port_num if self.port else os.environ.get("LOCAL_PORT"),
+            database=database if database else os.environ.get("LOCAL_DATABASE"),
+            user=user if user else os.environ.get("LOCAL_USER"),
+            password=password if password else os.environ.get("LOCAL_PASS"),
+            host=host if host else os.environ.get("LOCAL_HOST"),
+            port=port if port else os.environ.get("LOCAL_PORT"),
         )
 
         if connection:
@@ -51,7 +58,7 @@ class SQLInterface:
             print("error")
         return connection
 
-    def create_cursor(self) -> psycopg2.extensions.cursor:
+    def _create_cursor(self) -> psycopg2.extensions.cursor:
         """
         If the user hasn't connected manually, no self.conn exists, so we must call it and create the cursor from default values.
 
@@ -83,7 +90,7 @@ class SQLInterface:
             + " FLOAT"
         )
 
-        cursor = self.create_cursor()
+        cursor = self._create_cursor()
 
         sql_cmd = f"DROP TABLE IF EXISTS {db_names[-1]}; \n"
         sql_cmd += f"ALTER TABLE IF EXISTS {db_names[1]} RENAME TO {db_names[-1]};\n"
@@ -92,25 +99,32 @@ class SQLInterface:
         sql_cmd += f"CREATE TABLE IF NOT EXISTS {db_names[1]} ({columns});\n"
         sql_cmd += f"CREATE TABLE IF NOT EXISTS {db_names[-1]} ({columns});\n"
 
-        cursor.execute()
+        cursor.execute(sql_cmd)
         self.conn.commit()
-        self.close_cursor(cursor)
+        self._close_cursor(cursor)
         return
 
-    def load_data_to_table(self, target_table: str, source: str | os.PathLike) -> None:
-        cursor = self.create_cursor()
+    def load_data_to_table(self, target_table: str) -> None:
+        cursor = self._create_cursor()
 
-        source = os.path.join(os.path.dirname(os.path.dirname(__file__)), source)
-        with open(source) as truth:
-            next(truth)
-            cursor.copy_from(truth, target_table, columns=_COLUMNS, sep=",")
-            self.conn.commit()
-        self.close_cursor(cursor)
+        target_dir = os.path.abspath(
+            os.path.join(
+                f"{os.path.dirname(os.path.dirname(__file__))}\\data\\", target_table
+            )
+        )
+
+        print(target_dir)
+        for source in os.listdir(target_dir):
+            with open(os.path.join(target_dir, source), "r") as truth:
+                next(truth)
+                cursor.copy_from(truth, target_table, columns=_COLUMNS, sep=",")
+                self.conn.commit()
+        self._close_cursor(cursor)
 
     def close_connection(self) -> None:
         """Closes database connection."""
         self.conn.close()
 
-    def close_cursor(cursor: psycopg2.extensions.cursor) -> None:
+    def _close_cursor(self, cursor: psycopg2.extensions.cursor) -> None:
         """Closes cursor."""
         cursor.close()

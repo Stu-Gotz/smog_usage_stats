@@ -6,16 +6,17 @@ from datetime import datetime
 from bs4 import BeautifulSoup
 import requests
 
-#"Mega"-parent searching class. Everything contained within this class will be available,
-#but not necessarily used by child classes.
+
+# "Mega"-parent searching class. Everything contained within this class will be available,
+# but not necessarily used by child classes.
 class Search:
-    '''Parent searcher class.
-       
+    """Parent searcher class.
+
     ::params:
     >year (str or int): a string or integer year
     >month (str): two-digit string month
-    >gen: (str or int): an integer for whichever Pokemon generation is being queried. '''
-    
+    >gen: (str or int): an integer for whichever Pokemon generation is being queried."""
+
     def __init__(
         self,
         year: str | int,
@@ -26,7 +27,7 @@ class Search:
         self.month = month
         self.date = datetime.strptime(("-".join([str(year), month])), "%Y-%m")
         self.gen = gen
-        self.base = 'https://www.smogon.com/stats/'
+        self.base = "https://www.smogon.com/stats/"
 
     @property
     def year(self) -> str | int:
@@ -53,17 +54,17 @@ class Search:
         self._gen = value
 
     def search_and_save(self, pathname: str | os.PathLike = None) -> None:
-        '''
+        """
         Searches the smogon stats repo and saves files to system.
-        '''
+        """
         data = self.search()
         if self.ending:
-            ending = self.ending.split('-')[0]
+            ending = self.ending.split("-")[0]
             self._save_output(data, ending, pathname=pathname)
         else:
             print("No data was saved.")
             return None
-        
+
     def create_validation_object(self):
         this = vars(self)
         validation_object = {k.replace("_", ""): v for k, v in this.items()}

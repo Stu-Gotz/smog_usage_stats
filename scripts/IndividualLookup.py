@@ -7,14 +7,7 @@ from bs4 import BeautifulSoup
 # TODO: Account for rating when gen is current gen to ONLY be 1695, otherwise be 1630
 
 
-# We will be doing this a lot so make it a function.
-def lower_keys(dictionary: dict) -> dict:
-    """
-    Returns a dictionary with all keys lower-cased.
-    """
-    return {k.lower(): v for k, v in dictionary.items()}
-
-# Chaos searches are basically individual pokemon lookups, where one can get deeper analysis 
+# Chaos searches are basically individual pokemon lookups, where one can get deeper analysis
 # such as movesets, held items, EV spreads, etc
 class ChaosSearch(Search):
     def __init__(
@@ -28,13 +21,20 @@ class ChaosSearch(Search):
     def search(self, pokemon: str) -> object | None:
         res = requests.get(self.base)
         page_object = res.json()["data"]
-        page_object = lower_keys(page_object)
+        page_object = self.lower_keys(page_object)
 
         try:
             lookup = page_object[pokemon.lower()]
             return lookup
         except:
             return None
+
+    # We will be doing this a lot so make it a function.
+    def lower_keys(dictionary: dict) -> dict:
+        """
+        Returns a dictionary with all keys lower-cased.
+        """
+        return {k.lower(): v for k, v in dictionary.items()}
 
 
 class BaseChaosSearch(ChaosSearch):
@@ -86,7 +86,8 @@ class MonotypeChaosSearch(ChaosSearch):
     def build_url(self):
         self.base += f"gen{self.gen}monotype-mono{self.typing}-1500.json"
 
-#this is to search stats individually, but its a bit more involved, a WIP
+
+# this is to search stats individually, but its a bit more involved, a WIP
 class IndividualStatsLookup(BaseStatsSearch):
     def __init__(
         self,
@@ -94,23 +95,22 @@ class IndividualStatsLookup(BaseStatsSearch):
         month: Literal["Must be a two digit month string eg: '01' for Janu…"],
         gen: str | int,
         tier: str,
-        name: str
+        name: str,
     ) -> None:
         super().__init__(year, month, gen, tier)
         self.name = name
-        
+
     @property
     def name(self):
         return self._name
-    
+
     @name.setter
     def name(self, value):
         self._name = value
-    
+
     def find_individual_statistics(self):
         # do something to search through data
         return
-
 
 
 if __name__ == "__main__":
