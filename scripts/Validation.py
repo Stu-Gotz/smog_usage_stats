@@ -1,15 +1,43 @@
 from datetime import datetime
 
+types = [
+    "normal",
+    " fire",
+    " water",
+    " grass",
+    " flying",
+    " fighting",
+    " poison",
+    " electric",
+    " ground",
+    " rock",
+    " psychic",
+    " ice",
+    " bug",
+    " ghost",
+    " steel",
+    " dragon",
+    " dark",
+    " fairy",
+]
+
 
 class Validations:
     def __init__(self, validation_object: dict) -> None:
         self.validation_object = validation_object
 
-    def validate(self) -> bool:
+    def validate(self, isMonotype: bool = False) -> bool:
         """
         Runs the validation checks, if any of them return False, this also returns False.
         """
-        if not (self._is_correct_gen(self.validation_object)):
+        if isMonotype:
+            if self.typing not in types:
+                return False
+            if not (self._is_valid_date(self.validation_object)):
+                return False
+        else:
+            if not (self._is_correct_gen(self.validation_object)):
+                return False
             if not (self._is_valid_date(self.validation_object)):
                 return False
         return True
@@ -35,7 +63,7 @@ class Validations:
         }
         # something like having an object of dates this is where it makes sense to
         # have dt objects rather than strings
-        # if they fail, return false. good case for switch statements
+        # if they fail, return false.
 
         if int(validation_object["gen"]) <= 6:
             return True

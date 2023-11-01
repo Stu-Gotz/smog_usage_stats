@@ -13,7 +13,7 @@ class StatsSearch(Search):
         self,
         year: str | int,
         month: Literal["Must be a two digit month string eg: '01' for January"],
-        gen: str | int,
+        gen: str | int
     ) -> None:
         super().__init__(year, month, gen)
         self.ending = None
@@ -45,7 +45,10 @@ class StatsSearch(Search):
                 # turns it from a list of strings toa 2-d array
                 line = line.split(",")
                 line.append(f'{self.year}-{self.month}')
-                line.append(f'gen{self.gen}{self.tier}')
+                if self.tier:
+                    line.append(f'gen{self.gen}{self.tier}')
+                elif self.typing:
+                    line.append(f'mono{self.typing}')
 
                 # add it to the list to be returned
                 outlist.append(line)
@@ -69,30 +72,7 @@ class StatsSearch(Search):
             except ValueError:
                 return "Nothing found."
 
-    def _save_output(
-        self, data: list[list], ending: str, pathname: str | os.PathLike = None
-    ) -> None:
-        if pathname:
-            cache_dir = os.path.join(f"{up(up((__file__)))}/data/", pathname)
-        else:
-            cache_dir = self.locate_cache_dir(__file__)
-
-        if not os.path.exists((cache_dir)):
-            os.mkdir(cache_dir)
-        # make the document
-        filepath = os.path.join(cache_dir, f"{self.year}-{self.month}_{ending}.csv")
-        with open(
-            filepath,
-            "w",
-            newline="",
-        ) as file:
-            csvWriter = csv.writer(file, delimiter=",")
-            csvWriter.writerows(data)
-
-        if os.stat(filepath).st_size < 100:
-            os.remove(filepath)
-            print(f"File {filepath} deleted as it contained no data.")
-
+   
     def search(self) -> list[list]:
         """
         Searches the smogon stats repository and returns a list of lists.
@@ -136,6 +116,7 @@ class BaseStatsSearch(StatsSearch):
     def tier(self, value):
         self._tier = value
 
+
     def _build_url(self):
         # Rating of 1500 is defined by Smogon as their target of a normal player
 
@@ -146,14 +127,12 @@ class BaseStatsSearch(StatsSearch):
         if validator.validate():
             if Validations.is_modern_format(validation_object):
                 ending = f"gen{self.gen}{self.tier}-1500.txt"
-                print(ending)
                 self.ending = ending
                 self.base += ending
             else:
                 ending = self._vintage_search(
                     self.year, self.month, self.gen, self.tier
                 )
-                print(ending)
                 # below can be deleted after validations are done
                 if ending.endswith(".txt"):
                     self.ending = ending
@@ -179,6 +158,7 @@ class MonotypeStatsSearch(StatsSearch):
         super().__init__(year, month, gen)
         self.typing = typing.lower()
         self.base += f"{year}-{month}/monotype/"
+        self._build_url
 
     @property
     def typing(self) -> str:
@@ -188,8 +168,21 @@ class MonotypeStatsSearch(StatsSearch):
     def typing(self, value):
         self._typing = value
 
-    def build_url(self):
-        self.base += f"gen{self.gen}monotype-mono{self.typing}-1500.txt"
+
+    # I could probably combine this and the other into a singular _build_url() that lives in the parent class, but I think this is simpler
+    def _build_url(self):
+        # Rating of 1500 is defined by Smogon as their target of a normal player
+
+        validation_object = self.create_validation_object()
+        validator = Validations(validation_object)
+        # check dates for valid tiers
+        # since for now I am only looking up newer stats for database, it will be fine
+        if validator.validate(isMonotype=True):
+            ending = f"/gen{self.gen}monotype-mono{self.typing}-1500.txt"
+            self.ending = ending
+            self.base += ending
+        else:
+            print("Something isn't correct.")
 
 
 if __name__ == "__main__":

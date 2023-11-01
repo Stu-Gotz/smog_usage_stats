@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 #   }
 class Updater:
     @staticmethod
-    def _set_query(param_dict: dict) -> Search:
+    def _set_query_object(param_dict: dict) -> Search:
         """
         Basically a backend router that returns a Search.<subclass> object
         """
@@ -116,24 +116,25 @@ class Updater:
                 available_tiers.append(a)
             return tuple(set(available_tiers))
 
-        def get_data(date_obj: datetime, table: str) -> None:
+        def get_data(date_obj: datetime, table: str, isMonotype: bool = False) -> None:
             tiers = get_tiers(date_obj)
             for g in gens:
                 for t in tiers:
                     print(
                         date_dict[table].strftime("%Y"),
                     )
-                    q = self._set_query(
+                    q = self._set_query_object(
                         {
                             "year": date_dict[table].strftime("%Y"),
                             "month": date_dict[table].strftime("%m"),
                             "gen": g,
                             "branch_param": t,
                             "branch": "BaseStats",
+                            "isMonotype": isMonotype
                         }
                     )
                     print(q.base)
-                    q.search_and_save(pathname=table)
+                    q.search_and_save(pathname=table, isMonotype=isMonotype)
 
         for k in date_dict.keys():
             get_data(date_dict[k], k)
@@ -142,4 +143,9 @@ class Updater:
 
 
 # Updater().update_monthly()
-Updater._update_database()
+# Updater._update_database()
+
+types = 'Normal, Fire, Water, Grass, Flying, Fighting, Poison, Electric, Ground, Rock, Psychic, Ice, Bug, Ghost, Steel, Dragon, Dark, Fairy'
+types = types.lower().strip(' ').split(',')
+print(types)
+
