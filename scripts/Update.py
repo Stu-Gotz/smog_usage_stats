@@ -130,11 +130,11 @@ class Updater:
                             "gen": g,
                             "branch_param": t,
                             "branch": "BaseStats",
-                            "isMonotype": isMonotype
+                            "isMonotype": isMonotype,
                         }
                     )
                     print(q.base)
-                    q.search_and_save(pathname=table, isMonotype=isMonotype)
+                    q.search_and_save(pathname=table)
 
         for k in date_dict.keys():
             get_data(date_dict[k], k)
@@ -144,8 +144,3 @@ class Updater:
 
 # Updater().update_monthly()
 # Updater._update_database()
-
-types = 'Normal, Fire, Water, Grass, Flying, Fighting, Poison, Electric, Ground, Rock, Psychic, Ice, Bug, Ghost, Steel, Dragon, Dark, Fairy'
-types = types.lower().strip(' ').split(',')
-print(types)
-

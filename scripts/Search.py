@@ -21,7 +21,7 @@ class Search:
         self,
         year: str | int,
         month: Literal["Must be a two digit month string eg: '01' for January"],
-        gen: str | int
+        gen: str | int,
     ) -> None:
         self.year = year
         self.month = month
@@ -54,42 +54,42 @@ class Search:
         self._month = value
 
     def _save_output(
-            self, data: list[list], ending: str, pathname: str | os.PathLike = None, isMonotype: bool = False
-        ) -> None:
-            if pathname and not isMonotype:
-                storage_dir = os.path.join(f"{self.locate_base_data_directory()}/", pathname)
-            elif pathname and isMonotype:
-                storage_dir = os.path.join(f"{self.locate_base_data_directory()}/monotype", pathname)
-            else:
-                storage_dir = os.path.join(f"{self.locate_base_data_directory()}/cache")
+        self,
+        data: list[list],
+        ending: str,
+        pathname: str | os.PathLike = None,
+    ) -> None:
+        if pathname:
+            storage_dir = os.path.join(
+                f"{self.locate_base_data_directory()}/", pathname
+            )
+        else:
+            storage_dir = os.path.join(f"{self.locate_base_data_directory()}/cache")
 
-            if not os.path.exists((storage_dir)):
-                os.mkdir(storage_dir)
-            # make the document
-            filepath = os.path.join(storage_dir, f"{self.year}-{self.month}_{ending}.csv")
-            with open(
-                filepath,
-                "w",
-                newline="",
-            ) as file:
-                csvWriter = csv.writer(file, delimiter=",")
-                csvWriter.writerows(data)
+        if not os.path.exists((storage_dir)):
+            os.mkdir(storage_dir)
+        # make the document
+        filepath = os.path.join(storage_dir, f"{self.year}-{self.month}_{ending}.csv")
+        with open(
+            filepath,
+            "w",
+            newline="",
+        ) as file:
+            csvWriter = csv.writer(file, delimiter=",")
+            csvWriter.writerows(data)
 
-            if os.stat(filepath).st_size < 100:
-                os.remove(filepath)
-                print(f"File {filepath} deleted as it contained no data.")
+        if os.stat(filepath).st_size < 100:
+            os.remove(filepath)
+            print(f"File {filepath} deleted as it contained no data.")
 
-
-    def search_and_save(
-            self, ending: str, pathname: str | os.PathLike = None, isMonotype: bool = False
-        ) -> None:
+    def search_and_save(self, pathname: str | os.PathLike = None) -> None:
         """
         Searches the smogon stats repo and saves files to system.
         """
         data = self.search()
         if self.ending:
             ending = self.ending.split("-")[0]
-            self._save_output(data, ending, pathname=pathname, isMonotype=isMonotype)
+            self._save_output(data, ending, pathname=pathname)
         else:
             print("No data was saved.")
             return None
@@ -100,7 +100,7 @@ class Search:
         return validation_object
 
     def locate_base_data_directory(self, reference: str | os.PathLike) -> os.PathLike:
-        ''''''
+        """"""
         base_dir = up(up(reference))
         # set up the cached dir, theres probably a better way to do this but for now it will suffice
         cache_dir = os.path.join(base_dir, "data")
@@ -108,7 +108,7 @@ class Search:
 
     @staticmethod
     def clear_cache() -> None:
-        '''Clears cache files if there are any.'''
+        """Clears cache files if there are any."""
         base_dir = up(up(__file__))
         # set up the cached dir, theres probably a better way to do this but for now it will suffice
         cache_dir = os.path.join(base_dir, "data\\cache")
