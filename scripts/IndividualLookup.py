@@ -30,7 +30,7 @@ class ChaosSearch(Search):
             return None
 
     # We will be doing this a lot so make it a function.
-    def lower_keys(dictionary: dict) -> dict:
+    def lower_keys(self, dictionary: dict) -> dict:
         """
         Returns a dictionary with all keys lower-cased.
         """
@@ -98,7 +98,7 @@ class IndividualStatsLookup(BaseStatsSearch):
         name: str,
     ) -> None:
         super().__init__(year, month, gen, tier)
-        self.name = name
+        self.name = name.lower()
 
     @property
     def name(self):
@@ -106,20 +106,30 @@ class IndividualStatsLookup(BaseStatsSearch):
 
     @name.setter
     def name(self, value):
-        self._name = value
+        self._name = value.lower()
 
-    def find_individual_statistics(self):
-        # do something to search through data
-        return
+    def find_individual_usage(self, resmatrix: list[list] = None) -> dict | None:
+        # resmatrix is the resulting 2d array from the self.search() function
+        if not resmatrix:
+            resmatrix = self.search()
+        for m in resmatrix:
+            if m[1] == self.name:
+                return {m[1]: dict(zip(resmatrix[0], m))}
+        print("No result found.")
+        return None
 
 
 if __name__ == "__main__":
-    search = BaseChaosSearch("2022", "07", 8, "uu")
-    search.build_url()
-    result = search.search("SKARMORY")
-    print(result)
+    # search = BaseChaosSearch("2022", "07", 8, "uu")
+    # search.build_url()
+    # result = search.search("SKARMORY")
+    # print(result)
 
-    monosearch = MonotypeChaosSearch(year=2022, month="11", gen=9, typing="fairy")
-    monosearch.build_url()
-    monoresult = monosearch.search("Gardevoir")
-    print(monoresult)
+    # monosearch = MonotypeChaosSearch(year=2022, month="11", gen=9, typing="fairy")
+    # monosearch.build_url()
+    # monoresult = monosearch.search("Gardevoir")
+    # print(monoresult)
+
+    indysearch = IndividualStatsLookup(2022, "11", "8", "ou", "scizor")
+    result = indysearch.find_individual_usage()
+    print(result)

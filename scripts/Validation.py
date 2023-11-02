@@ -37,8 +37,10 @@ class Validations:
                 return False
         else:
             if not (self._is_correct_gen(self.validation_object)):
+                print("Generation choice is invalid")
                 return False
             if not (self._is_valid_date(self.validation_object)):
+                print("Date and generation combination is invalid.")
                 return False
         return True
 
@@ -68,10 +70,11 @@ class Validations:
         if int(validation_object["gen"]) <= 6:
             return True
         elif (int(validation_object["gen"]) > 6) and (
-            validation_object["date"].date()
-            < cutoff_dates[validation_object["gen"]].date()
+            validation_object["date"] < cutoff_dates[str(validation_object["gen"])]
         ):
             return False
+        else:
+            return True
 
     @staticmethod
     def _is_valid_date(validation_object: dict) -> bool:
@@ -81,7 +84,8 @@ class Validations:
 
         if year < 2014:
             return False
-        elif (year == 2014) and (month != (11 | 12)):
-            return False
+        elif year == 2014:
+            if month != (11 | 12):
+                return False
         else:
             return True
