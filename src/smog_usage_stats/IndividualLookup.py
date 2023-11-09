@@ -2,7 +2,6 @@ import requests
 from typing import Literal
 from Search import Search
 from UsageStatsLookup import BaseStatsSearch
-from bs4 import BeautifulSoup
 
 # TODO: Account for rating when gen is current gen to ONLY be 1695, otherwise be 1630
 

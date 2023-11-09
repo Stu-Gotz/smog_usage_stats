@@ -3,7 +3,6 @@ from os.path import dirname as up
 import os
 import shutil
 from datetime import datetime
-from bs4 import BeautifulSoup
 import csv
 
 

@@ -1,8 +1,0 @@
-LICENSE
-README.md
-setup.py
-smog_usage_stats.egg-info/PKG-INFO
-smog_usage_stats.egg-info/SOURCES.txt
-smog_usage_stats.egg-info/dependency_links.txt
-smog_usage_stats.egg-info/requires.txt
-smog_usage_stats.egg-info/top_level.txt

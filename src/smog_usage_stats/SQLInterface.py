@@ -1,11 +1,13 @@
 import os
 import psycopg2
 from dotenv import load_dotenv
+from os.path import dirname as up
 
 try:
     load_dotenv()
 except:
-    pass
+    print("No local environment variables found.")
+
 
 _COLUMNS = (
     "rank",
@@ -45,6 +47,7 @@ class SQLInterface:
         host: str = None,
         port: str = None,
     ) -> psycopg2.extensions.connection:
+        
         connection = psycopg2.connect(
             database=database if database else os.environ.get("LOCAL_DATABASE"),
             user=user if user else os.environ.get("LOCAL_USER"),
@@ -57,7 +60,7 @@ class SQLInterface:
             self.conn = connection
             print("connected")
         else:
-            print("error")
+            raise ConnectionError("No database connection was established. Please check your credentials.")
         return connection
 
     def _create_cursor(self) -> psycopg2.extensions.cursor:
@@ -115,7 +118,7 @@ class SQLInterface:
 
         target_dir = os.path.abspath(
             os.path.join(
-                f"{os.path.dirname(os.path.dirname(__file__))}\\data\\", target_table
+                f"{up(up(__file__))}\\data\\", target_table
             )
         )
 

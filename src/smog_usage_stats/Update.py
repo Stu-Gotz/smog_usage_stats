@@ -1,7 +1,6 @@
 import UsageStatsLookup as StatsSearch
 import IndividualLookup as IndividualSearch
 from SQLInterface import SQLInterface
-from typing import Literal
 from Search import Search
 from datetime import datetime
 from dateutil.relativedelta import relativedelta

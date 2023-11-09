@@ -1,10 +1,7 @@
 from typing import Literal
 from Search import Search
 import requests
-import csv
-import os
 from bs4 import BeautifulSoup
-from os.path import dirname as up
 from Validation import Validations
 
 
