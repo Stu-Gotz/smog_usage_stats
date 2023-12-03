@@ -1,5 +1,5 @@
-import UsageStatsLookup as StatsSearch
-import IndividualLookup as IndividualSearch
+from UsageStatsLookup import BaseStatsSearch, MonotypeStatsSearch
+from IndividualLookup import BaseChaosSearch, MonotypeChaosSearch
 from SQLInterface import SQLInterface
 from Search import Search
 from datetime import datetime
@@ -23,7 +23,7 @@ class Updater:
         """
         match param_dict["branch"]:
             case "BaseStats":
-                new_query = StatsSearch.BaseStatsSearch(
+                new_query = BaseStatsSearch(
                     year=param_dict["year"],
                     month=param_dict["month"],
                     gen=param_dict["gen"],
@@ -31,21 +31,21 @@ class Updater:
                 )
                 return new_query
             case "MonoStats":
-                new_query = StatsSearch.MonotypeStatsSearch(
+                new_query = MonotypeStatsSearch(
                     year=param_dict["year"],
                     month=param_dict["month"],
                     gen=param_dict["gen"],
                     typing=param_dict["branch_param"],
                 )
             case "BaseChaos":
-                new_query = IndividualSearch.BaseChaosSearch(
+                new_query = BaseChaosSearch(
                     year=param_dict["year"],
                     month=param_dict["month"],
                     gen=param_dict["gen"],
                     tier=param_dict["branch_param"],
                 )
             case "MonoChaos":
-                new_query = IndividualSearch.MonotypeChaosSearch(
+                new_query = MonotypeChaosSearch(
                     year=param_dict["year"],
                     month=param_dict["month"],
                     gen=param_dict["gen"],
@@ -141,5 +141,5 @@ class Updater:
         self._update_database()
 
 
-# Updater().update_monthly()
-# Updater._update_database()
+if __name__ == '__main__':
+    pass

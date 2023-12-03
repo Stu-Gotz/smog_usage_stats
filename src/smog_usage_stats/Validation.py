@@ -2,23 +2,23 @@ from datetime import datetime
 
 types = [
     "normal",
-    " fire",
-    " water",
-    " grass",
-    " flying",
-    " fighting",
-    " poison",
-    " electric",
-    " ground",
-    " rock",
-    " psychic",
-    " ice",
-    " bug",
-    " ghost",
-    " steel",
-    " dragon",
-    " dark",
-    " fairy",
+    "fire",
+    "water",
+    "grass",
+    "flying",
+    "fighting",
+    "poison",
+    "electric",
+    "ground",
+    "rock",
+    "psychic",
+    "ice",
+    "bug",
+    "ghost",
+    "steel",
+    "dragon",
+    "dark",
+    "fairy",
 ]
 
 
@@ -31,9 +31,11 @@ class Validations:
         Runs the validation checks, if any of them return False, this also returns False.
         """
         if isMonotype:
-            if self.typing not in types:
+            if self.validation_object["typing"].lower() not in types:
+                print(f"Invalid type {self.validation_object['typing']} is invalid.")
                 return False
             if not (self._is_valid_date(self.validation_object)):
+                print("Date is invalid.")
                 return False
         else:
             if not (self._is_correct_gen(self.validation_object)):
@@ -83,9 +85,11 @@ class Validations:
         month = int(validation_object["date"].month)
 
         if year < 2014:
+            print(f"Year {year} is invalid.")
             return False
         elif year == 2014:
             if month != (11 | 12):
+                print(f"Year {year} and month {month} is invalid.")
                 return False
         else:
             return True

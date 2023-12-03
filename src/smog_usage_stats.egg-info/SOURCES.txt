@@ -14,3 +14,4 @@ src/smog_usage_stats.egg-info/SOURCES.txt
 src/smog_usage_stats.egg-info/dependency_links.txt
 src/smog_usage_stats.egg-info/requires.txt
 src/smog_usage_stats.egg-info/top_level.txt
+tests/test_basic_stats_search.py

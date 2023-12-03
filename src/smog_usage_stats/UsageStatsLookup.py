@@ -14,9 +14,10 @@ class StatsSearch(Search):
     ) -> None:
         super().__init__(year, month, gen)
         self.ending = None
+        self.isMonotype = False
 
     ### NOT USED IN CHAOS BRANCH SEARCHES ###
-    def _remove_formatting(self, data: list) -> list[list]:
+    def _remove_formatting(self, data: list, isMonotype: bool) -> list[list]:
         # Set the column names first
         outlist = [
             [
@@ -42,9 +43,9 @@ class StatsSearch(Search):
                 # turns it from a list of strings toa 2-d array
                 line = line.split(",")
                 line.append(f'{self.year}-{self.month}')
-                if self.tier:
+                if not isMonotype:
                     line.append(f'gen{self.gen}{self.tier}')
-                elif self.typing:
+                elif isMonotype:
                     line.append(f'mono{self.typing}')
 
                 # add it to the list to be returned
@@ -83,8 +84,7 @@ class StatsSearch(Search):
         # truncate to get rid of the non-relevant prefixes and last two lines of styling
         data = data[5:-2]
         # remove the formatting
-        data = self._remove_formatting(data)
-
+        data = self._remove_formatting(data, isMonotype=self.isMonotype)
         return data
 
 
@@ -155,7 +155,8 @@ class MonotypeStatsSearch(StatsSearch):
         super().__init__(year, month, gen)
         self.typing = typing.lower()
         self.base += f"{year}-{month}/monotype/"
-        self._build_url
+        self._build_url()
+        self.isMonotype = True
 
     @property
     def typing(self) -> str:
@@ -175,18 +176,18 @@ class MonotypeStatsSearch(StatsSearch):
         # check dates for valid tiers
         # since for now I am only looking up newer stats for database, it will be fine
         if validator.validate(isMonotype=True):
-            ending = f"/gen{self.gen}monotype-mono{self.typing}-1500.txt"
+            ending = f"gen{self.gen}monotype-mono{self.typing}-1500.txt"
             self.ending = ending
             self.base += ending
         else:
             print("Something isn't correct.")
 
+if __name__ == '__main__':
 
-if __name__ == "__main__":
-    search = BaseStatsSearch(2015, "09", 4, "ou")
-    # query = search.search()
-    # search._save_output(query)
-    search.search_and_save(pathname="current")
-    # search.clear_cache()
+    base_search = BaseStatsSearch('2023', '05', '8', 'ou')
+    base_search_data = base_search.search()
+    print(base_search_data[3])
 
-    pass
+    mono_search = MonotypeStatsSearch('2023', '05', '9', 'psychic')
+    mono_search_data = mono_search.search()
+    print(mono_search_data[3])

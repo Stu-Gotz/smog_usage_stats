@@ -87,7 +87,7 @@ class MonotypeChaosSearch(ChaosSearch):
 
 
 # this is to search stats individually, but its a bit more involved, a WIP
-class IndividualStatsLookup(BaseStatsSearch):
+class IndividualStatsSearch(BaseStatsSearch):
     def __init__(
         self,
         year: str | int,
@@ -129,6 +129,6 @@ if __name__ == "__main__":
     # monoresult = monosearch.search("Gardevoir")
     # print(monoresult)
 
-    indysearch = IndividualStatsLookup(2022, "11", "8", "ou", "scizor")
+    indysearch = IndividualStatsSearch(2022, "11", "8", "ou", "scizor")
     result = indysearch.find_individual_usage()
     print(result)
