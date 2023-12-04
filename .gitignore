@@ -7,3 +7,4 @@ data/cache/
 data/reference/
 data/temp/
 .pypirc
+data/test/

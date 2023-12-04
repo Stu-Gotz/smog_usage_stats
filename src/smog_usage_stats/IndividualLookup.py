@@ -14,16 +14,26 @@ class ChaosSearch(Search):
         year: str | int,
         month: Literal["Must be a two digit month string eg: '01' for January"],
         gen: str | int,
+        name: str,
     ) -> None:
+        self.name = name.lower()
         super().__init__(year, month, gen)
 
-    def search(self, pokemon: str) -> object | None:
+    @property
+    def name(self):
+        return self._name
+    
+    @name.setter
+    def name(self, value):
+        self._name = value.lower()
+
+    def search(self) -> object | None:
         res = requests.get(self.base)
         page_object = res.json()["data"]
         page_object = self.lower_keys(page_object)
 
         try:
-            lookup = page_object[pokemon.lower()]
+            lookup = page_object[self.name]
             return lookup
         except:
             return None
@@ -42,11 +52,13 @@ class BaseChaosSearch(ChaosSearch):
         year: str | int,
         month: Literal["Must be a two digit month string eg: '01' for January"],
         gen: str | int,
+        name: str,
         tier: str,
     ) -> None:
-        super().__init__(year, month, gen)
+        super().__init__(year, month, gen, name)
         self.tier = tier.lower()
         self.base = f"https://www.smogon.com/stats/{self.year}-{self.month}/chaos/"
+        self._build_url()
 
     @property
     def tier(self) -> str:
@@ -56,7 +68,7 @@ class BaseChaosSearch(ChaosSearch):
     def tier(self, value):
         self._tier = value
 
-    def build_url(self):
+    def _build_url(self):
         self.base += f"gen{self.gen}{self.tier}-1500.json"
 
 
@@ -66,13 +78,16 @@ class MonotypeChaosSearch(ChaosSearch):
         year: str | int,
         month: Literal["Must be a two digit month string eg: '01' for January"],
         gen: str | int,
+        name: str,
         typing: str,
     ) -> None:
-        super().__init__(year, month, gen)
+        super().__init__(year, month, gen, name)
         self.base = (
             f"https://www.smogon.com/stats/{self.year}-{self.month}/monotype/chaos/"
         )
         self.typing = typing.lower()
+        self.isMonotype = True
+        self._build_url()
 
     @property
     def typing(self) -> str:
@@ -82,7 +97,7 @@ class MonotypeChaosSearch(ChaosSearch):
     def typing(self, value):
         self._typing = value
 
-    def build_url(self):
+    def _build_url(self):
         self.base += f"gen{self.gen}monotype-mono{self.typing}-1500.json"
 
 
@@ -113,22 +128,24 @@ class IndividualStatsSearch(BaseStatsSearch):
             resmatrix = self.search()
         for m in resmatrix:
             if m[1] == self.name:
-                return {m[1]: dict(zip(resmatrix[0], m))}
+                return dict(zip(resmatrix[0], m))
         print("No result found.")
         return None
 
 
 if __name__ == "__main__":
-    # search = BaseChaosSearch("2022", "07", 8, "uu")
-    # search.build_url()
-    # result = search.search("SKARMORY")
-    # print(result)
+    search = BaseChaosSearch(year="2022", month="07", gen=8, tier="uu", name="SKARMORY")
+    result = search.search()
+    print(f"{search.name}:  {result}\n")
 
-    # monosearch = MonotypeChaosSearch(year=2022, month="11", gen=9, typing="fairy")
-    # monosearch.build_url()
-    # monoresult = monosearch.search("Gardevoir")
-    # print(monoresult)
+    monosearch = MonotypeChaosSearch(year=2022, month="11", gen=9, typing="fairy", name="Gardevoir")
+    monoresult = monosearch.search()
+    print(f"{monosearch.name}:  {monoresult}\n")
 
-    indysearch = IndividualStatsSearch(2022, "11", "8", "ou", "scizor")
-    result = indysearch.find_individual_usage()
-    print(result)
+    indysearch = IndividualStatsSearch(2022, "11", "8", "ou", "scIzor")
+    indyresult = indysearch.find_individual_usage()
+    print(f"{indysearch.name}:  {indyresult}\n")
+
+    print(indyresult['rank'])
+
+    print(result.keys())

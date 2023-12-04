@@ -21,7 +21,7 @@ def sample_return_data():
 @pytest.fixture
 def basic_stats_search():
     base_search = UsageStatsLookup.BaseStatsSearch(
-        year="2023", month="06", gen=9, tier="ou"
+        year="2023", month="09", gen=9, tier="ou"
     )
     return base_search
 
@@ -29,6 +29,6 @@ def basic_stats_search():
 @pytest.fixture
 def mono_stats_search():
     mono_search = UsageStatsLookup.MonotypeStatsSearch(
-        year="2023", month="06", gen=9, typing="normal"
+        year="2023", month="09", gen=9, typing="normal"
     )
     return mono_search
