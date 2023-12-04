@@ -10,11 +10,10 @@ class StatsSearch(Search):
         self,
         year: str | int,
         month: Literal["Must be a two digit month string eg: '01' for January"],
-        gen: str | int
+        gen: str | int,
     ) -> None:
         super().__init__(year, month, gen)
         self.ending = None
-        self.isMonotype = False
 
     ### NOT USED IN CHAOS BRANCH SEARCHES ###
     def _remove_formatting(self, data: list, isMonotype: bool) -> list[list]:
@@ -29,7 +28,7 @@ class StatsSearch(Search):
                 "real",
                 "real_pct",
                 "date",
-                "tier"
+                "tier",
             ]
         ]
         # Remove the formatting from the webpage
@@ -42,11 +41,11 @@ class StatsSearch(Search):
                 line = line[1:-1]
                 # turns it from a list of strings toa 2-d array
                 line = line.split(",")
-                line.append(f'{self.year}-{self.month}')
+                line.append(f"{self.year}-{self.month}")
                 if not isMonotype:
-                    line.append(f'gen{self.gen}{self.tier}')
+                    line.append(f"gen{self.gen}{self.tier}")
                 elif isMonotype:
-                    line.append(f'mono{self.typing}')
+                    line.append(f"mono{self.typing}")
 
                 # add it to the list to be returned
                 outlist.append(line)
@@ -70,7 +69,6 @@ class StatsSearch(Search):
             except ValueError:
                 return "Nothing found."
 
-   
     def search(self) -> list[list]:
         """
         Searches the smogon stats repository and returns a list of lists.
@@ -113,11 +111,10 @@ class BaseStatsSearch(StatsSearch):
     def tier(self, value):
         self._tier = value
 
-
     def _build_url(self):
         # Rating of 1500 is defined by Smogon as their target of a normal player
 
-        validation_object = self.create_validation_object()
+        validation_object = self._create_validation_object()
         validator = Validations(validation_object)
         # check dates for valid tiers
         # since for now I am only looking up newer stats for database, it will be fine
@@ -166,12 +163,11 @@ class MonotypeStatsSearch(StatsSearch):
     def typing(self, value):
         self._typing = value
 
-
     # I could probably combine this and the other into a singular _build_url() that lives in the parent class, but I think this is simpler
     def _build_url(self):
         # Rating of 1500 is defined by Smogon as their target of a normal player
 
-        validation_object = self.create_validation_object()
+        validation_object = self._create_validation_object()
         validator = Validations(validation_object)
         # check dates for valid tiers
         # since for now I am only looking up newer stats for database, it will be fine
@@ -182,12 +178,14 @@ class MonotypeStatsSearch(StatsSearch):
         else:
             print("Something isn't correct.")
 
-if __name__ == '__main__':
 
-    base_search = BaseStatsSearch('2023', '05', '8', 'ou')
+if __name__ == "__main__":
+    base_search = BaseStatsSearch("2023", "06", "9", "ou")
     base_search_data = base_search.search()
+    print(base_search._create_validation_object())
     print(base_search_data[3])
 
-    mono_search = MonotypeStatsSearch('2023', '05', '9', 'psychic')
+    mono_search = MonotypeStatsSearch("2023", "05", "9", "psychic")
     mono_search_data = mono_search.search()
+    print(mono_search._create_validation_object())
     print(mono_search_data[3])

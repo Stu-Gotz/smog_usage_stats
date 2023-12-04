@@ -27,6 +27,7 @@ class Search:
         self.date = datetime.strptime(("-".join([str(year), month])), "%Y-%m")
         self.gen = gen
         self.base = "https://www.smogon.com/stats/"
+        self.isMonotype = False
 
     @property
     def year(self) -> str | int:
@@ -42,7 +43,7 @@ class Search:
 
     @gen.setter
     def gen(self, value):
-        self._gen = value
+        self._gen = int(value)
 
     @year.setter
     def year(self, value):
@@ -60,10 +61,10 @@ class Search:
     ) -> None:
         if pathname:
             storage_dir = os.path.join(
-                f"{self.locate_base_data_directory()}/", pathname
+                f"{self._locate_base_data_directory()}/", pathname
             )
         else:
-            storage_dir = os.path.join(f"{self.locate_base_data_directory()}/cache")
+            storage_dir = os.path.join(f"{self._locate_base_data_directory()}/cache")
 
         if not os.path.exists((storage_dir)):
             os.mkdir(storage_dir)
@@ -93,14 +94,16 @@ class Search:
             print("No data was saved.")
             return None
 
-    def create_validation_object(self):
+    def _create_validation_object(self):
         this = vars(self)
         validation_object = {k.replace("_", ""): v for k, v in this.items()}
         return validation_object
 
-    def locate_base_data_directory(self, reference: str | os.PathLike) -> os.PathLike:
+    def _locate_base_data_directory(
+        self, reference_dir: str | os.PathLike
+    ) -> os.PathLike:
         """"""
-        base_dir = up(up(reference))
+        base_dir = up(up(reference_dir))
         # set up the cached dir, theres probably a better way to do this but for now it will suffice
         cache_dir = os.path.join(base_dir, "data")
         return cache_dir
