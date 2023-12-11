@@ -14,7 +14,11 @@ If your system uses `pip3` instead of `pip`, use that.
 
 `BaseStatsSearch` -> Retrieves metagame usage statistics for non-Monotype metagames.
 
-[[ Example here ]]
+    smog_usage_stats.UsageStatsLookup as smog
+    
+    baseSearch = smog.BaseStatsSearch(2022, '06', 8, 'ou')
+    results = baseSearch.search()
+    # returns 2-D array
 
 `MonotypeStatsSearch` -> searches the monotype stats directory
 
