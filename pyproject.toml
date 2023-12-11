@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "smog_usage_stats"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
     "beautifulsoup4",
     "pathlib",
