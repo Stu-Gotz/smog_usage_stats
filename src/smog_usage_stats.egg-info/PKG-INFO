@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: smog-usage-stats
-Version: 1.0.1
+Version: 1.0.3
 Author-email: "stu.gotz.dev" <gotz.stu.dev@gmail.com>
 License: MIT License
         
@@ -30,8 +30,23 @@ Classifier: Programming Language :: Python :: 3
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown
-Provides-Extra: dev
 License-File: LICENSE
+Requires-Dist: beautifulsoup4
+Requires-Dist: pathlib
+Requires-Dist: psycopg==3.1.12
+Requires-Dist: psycopg-binary==3.1.12
+Requires-Dist: psycopg2==2.9.5
+Requires-Dist: python-dateutil
+Requires-Dist: python-dotenv
+Requires-Dist: requests
+Requires-Dist: soupsieve
+Requires-Dist: typing_extensions
+Provides-Extra: dev
+Requires-Dist: black; extra == "dev"
+Requires-Dist: bumpver; extra == "dev"
+Requires-Dist: isort; extra == "dev"
+Requires-Dist: pip-tools; extra == "dev"
+Requires-Dist: pytest; extra == "dev"
 
 # smog_usage_stats
 
@@ -41,7 +56,7 @@ A Python wrapper for interacting with Smogon's Pokemon Showdown usage stats data
 
 ### Installing:
 
-`pip install smog-usage-stats`
+`pip install smog_usage_stats`
 
 If your system uses `pip3` instead of `pip`, use that.
 
