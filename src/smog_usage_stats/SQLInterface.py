@@ -47,7 +47,9 @@ class SQLInterface:
         host: str = None,
         port: str = None,
     ) -> psycopg2.extensions.connection:
+        """
         
+        """
         connection = psycopg2.connect(
             database=database if database else os.environ.get("LOCAL_DATABASE"),
             user=user if user else os.environ.get("LOCAL_USER"),

@@ -61,10 +61,10 @@ class Search:
     ) -> None:
         if pathname:
             storage_dir = os.path.join(
-                f"{self._locate_base_data_directory()}/", pathname
+                f"{self._locate_base_data_directory()}\\", pathname
             )
         else:
-            storage_dir = os.path.join(f"{self._locate_base_data_directory()}/cache")
+            storage_dir = os.path.join(f"{self._locate_base_data_directory()}\\cache")
 
         if not os.path.exists((storage_dir)):
             os.mkdir(storage_dir)
@@ -100,10 +100,10 @@ class Search:
         return validation_object
 
     def _locate_base_data_directory(
-        self, reference_dir: str | os.PathLike
+        self
     ) -> os.PathLike:
         """"""
-        base_dir = up(up(reference_dir))
+        base_dir = up(up(up(__file__)))
         # set up the cached dir, theres probably a better way to do this but for now it will suffice
         cache_dir = os.path.join(base_dir, "data")
         return cache_dir

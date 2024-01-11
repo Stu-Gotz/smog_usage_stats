@@ -13,7 +13,7 @@ import os
 # from smog_usage_stats.Update import Updater
 # from smog_usage_stats.SQLInterface import SQLInterface
 
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 __author__ = "Alan Nardo"
 
 # Get the parent directory

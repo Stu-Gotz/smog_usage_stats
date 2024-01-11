@@ -1,8 +1,9 @@
 import pytest
 import requests
 import os
-from ..src.smog_usage_stats import UsageStatsLookup
-
+from dotenv import load_dotenv
+from os.path import dirname as up
+from smog_usage_stats import UsageStatsLookup, IndividualLookup
 
 @pytest.fixture(autouse=True)
 def disable_network_calls(monkeypatch):
@@ -32,3 +33,12 @@ def mono_stats_search():
         year="2023", month="09", gen=9, typing="normal"
     )
     return mono_search
+
+
+try:
+    load_dotenv()
+except:
+    print("No local environment variables found.")
+    
+
+
