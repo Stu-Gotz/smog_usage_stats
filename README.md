@@ -6,7 +6,7 @@ A Python wrapper for interacting with Smogon's Pokemon Showdown usage stats data
 
 ### Installing:
 
-`pip install smog_usage_stats`
+`py -m pip install smog-usage-stats`
 
 If your system uses `pip3` instead of `pip`, use that.
 
