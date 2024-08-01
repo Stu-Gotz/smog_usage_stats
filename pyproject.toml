@@ -5,20 +5,9 @@ requires=["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
+dynamic = ["dependencies"]
 name = "smog_usage_stats"
-version = "1.0.4"
-dependencies = [
-    "beautifulsoup4",
-    "pathlib",
-    "psycopg==3.1.12",
-    "psycopg-binary==3.1.12",
-    "psycopg2==2.9.5",
-    "python-dateutil",
-    "python-dotenv",
-    "requests",
-    "soupsieve",
-    "typing_extensions",
-]
+version = "1.0.5"
 readme = "README.md"
 authors = [{ name = "stu.gotz.dev", email = "gotz.stu.dev@gmail.com" }]
 license = { file = "LICENSE" }
@@ -30,6 +19,12 @@ classifiers = [
 ]
 keywords = ["pokemon", "usage", "pokemon showdown", "smogon"]
 requires-python = ">=3.7"
+
+[tools.setuptools]
+packages = ["src"]
+
+[tool.setuptools.dynamic]
+dependencies = {file = "requirements.txt"}
 
 [project.optional-dependencies]
 dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
