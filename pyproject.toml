@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 [project]
 dynamic = ["dependencies"]
 name = "smog_usage_stats"
-version = "1.0.5"
+version = "1.0.7"
 readme = "README.md"
 authors = [{ name = "stu.gotz.dev", email = "gotz.stu.dev@gmail.com" }]
 license = { file = "LICENSE" }
@@ -30,7 +30,7 @@ dependencies = {file = "requirements.txt"}
 dev = ["black", "bumpver", "isort", "pip-tools", "pytest"]
 
 [tool.bumpver]
-current_version = "1.0.4"
+current_version = "1.0.7"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true

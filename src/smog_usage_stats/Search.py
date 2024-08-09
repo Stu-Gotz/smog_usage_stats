@@ -103,7 +103,7 @@ class Search:
         self
     ) -> os.PathLike:
         """"""
-        base_dir = up(up(up(__file__)))
+        base_dir = up(up(up(".")))
         # set up the cached dir, theres probably a better way to do this but for now it will suffice
         cache_dir = os.path.join(base_dir, "data")
         return cache_dir
@@ -111,7 +111,7 @@ class Search:
     @staticmethod
     def clear_cache() -> None:
         """Clears cache files if there are any."""
-        base_dir = up(up(__file__))
+        base_dir = up(up("."))
         # set up the cached dir, theres probably a better way to do this but for now it will suffice
         cache_dir = os.path.join(base_dir, "data\\cache")
         if os.path.exists(cache_dir):

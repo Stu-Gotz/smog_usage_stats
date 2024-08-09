@@ -76,6 +76,13 @@ from a certain month's stats data
 >
 > {'rank': '44', 'pokemon': 'scizor', 'usage_pct': '3.50114', 'raw_usage': '67725', 'raw_pct': '3.565', 'real': '51565', 'real_pct': '3.440', 'date': '2022-11', 'tier': 'gen8ou'}
 
+#### Importing can also be done with from ... import x
+
+> `from smog_usage_stats import IndividualLookup #as IL (for example)`
+>
+> `individualStats = LI.IndividualStatsSearch(2022, "11", "8", "ou", "scIzor")`
+
+
 ## Contributing:
 
 If you find a bug, please [make an issue](https://github.com/Stu-Gotz/smog_usage_stats/issues).
@@ -85,5 +92,3 @@ If you would like to contribute, feel free to create a fork and submit a pull re
 ## License
 
 MIT License
-
-Copyright (c) 2023 Stu-Gotz
