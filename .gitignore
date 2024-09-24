@@ -2,9 +2,10 @@ __pycache__/
 .vscode/
 venv/
 .env
-TODO.txt
 data/cache/
 data/reference/
 data/temp/
 .pypirc
 data/test/
+smog_usage_stats.egg-info/
+.todo

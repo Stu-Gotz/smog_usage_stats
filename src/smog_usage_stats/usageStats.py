@@ -1,15 +1,15 @@
-from typing import Literal
-from Search import Search
+from typing import Literal, Optional
+from search import Search
 import requests
 from bs4 import BeautifulSoup
-from Validation import Validations
+from validator_util import Validations
 
 
 class StatsSearch(Search):
     def __init__(
         self,
         year: str | int,
-        month: Literal["Must be a two digit month string eg: '01' for January"],
+        month: str,
         gen: str | int,
     ) -> None:
         super().__init__(year, month, gen)
@@ -83,7 +83,19 @@ class StatsSearch(Search):
         data = data[5:-2]
         # remove the formatting
         data = self._remove_formatting(data, isMonotype=self.isMonotype)
+        self.result = data
         return data
+    
+    # this is to search stats individually, but its a bit more involved, a WIP
+    def individual_lookup(self, name: str): 
+
+        if not self.result:
+            raise ValueError("No search results found.")
+        for m in self.result:
+            if m[1] == name:
+                return m
+        print("No result found.")
+        return None
 
 
 class BaseStatsSearch(StatsSearch):
@@ -137,6 +149,8 @@ class BaseStatsSearch(StatsSearch):
             print("Something isn't correct.")
 
 
+    
+
 class MonotypeStatsSearch(StatsSearch):
     """>typing (str): string of type to be queried."""
 
@@ -180,13 +194,20 @@ class MonotypeStatsSearch(StatsSearch):
             print("Something isn't correct.")
 
 
-if __name__ == "__main__":
-    base_search = BaseStatsSearch("2023", "06", "9", "ou")
-    base_search_data = base_search.search()
-    print(base_search._create_validation_object())
-    print(base_search_data[3])
+# if __name__ == "__main__":
+#     import time
+#     _now = time.time()
+#     base_search = BaseStatsSearch("2023", "06", "9", "ou")
+#     base_search_data = base_search.search()
+#     print(base_search.individual_lookup("scizor"))
+#     # print(base_search._create_validation_object())
+#     print(base_search_data[3])
 
-    mono_search = MonotypeStatsSearch("2022", "06", "8", "psychic")
-    mono_search_data = mono_search.search()
-    print(mono_search._create_validation_object())
-    print(mono_search_data[0:5])
+
+#     mono_search = MonotypeStatsSearch("2023", "09", "9", "psychic")
+#     mono_search_data = mono_search.search()
+#     print(mono_search._create_validation_object())
+#     # print(mono_search_data)
+#     print(mono_search.individual_lookup("jirachi"))
+
+#     print(time.time() - _now)

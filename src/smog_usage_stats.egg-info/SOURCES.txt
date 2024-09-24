@@ -3,9 +3,9 @@ README.md
 pyproject.toml
 requirements.txt
 setup.py
-src/smog_usage_stats/IndividualLookup.py
+src/smog_usage_stats/ChaosStats.py
 src/smog_usage_stats/Search.py
-src/smog_usage_stats/UsageStatsLookup.py
+src/smog_usage_stats/UsageStats.py
 src/smog_usage_stats/Validation.py
 src/smog_usage_stats/__init__.py
 src/smog_usage_stats.egg-info/PKG-INFO

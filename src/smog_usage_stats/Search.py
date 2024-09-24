@@ -19,7 +19,7 @@ class Search:
     def __init__(
         self,
         year: str | int,
-        month: Literal["Must be a two digit month string eg: '01' for January"],
+        month: str,
         gen: str | int,
     ) -> None:
         self.year = year
@@ -67,7 +67,7 @@ class Search:
             storage_dir = os.path.join(f"{self._locate_base_data_directory()}\\cache")
 
         if not os.path.exists((storage_dir)):
-            os.mkdir(storage_dir)
+            os.makedirs(storage_dir)
         # make the document
         filepath = os.path.join(storage_dir, f"{self.year}-{self.month}_{ending}.csv")
         with open(
@@ -85,6 +85,14 @@ class Search:
     def search_and_save(self, pathname: str | os.PathLike = None) -> None:
         """
         Searches the smogon stats repo and saves files to system.
+
+            Params:
+            pathname: str | os.PathLike -> (Optional) string or os.PathLike
+            object for a directory to save the data. If left None will create a
+            data directory in the project folder.
+
+            Returns:
+            None if saving fails.
         """
         data = self.search()
         if self.ending:

@@ -19,7 +19,7 @@ class Search:
     def __init__(
         self,
         year: str | int,
-        month: Literal["Must be a two digit month string eg: '01' for January"],
+        month: str,
         gen: str | int,
     ) -> None:
         self.year = year

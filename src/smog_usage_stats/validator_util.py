@@ -88,7 +88,7 @@ class Validations:
             print(f"Year {year} is invalid.")
             return False
         elif year == 2014:
-            if month != (11 | 12):
+            if month not in (11, 12):
                 print(f"Year {year} and month {month} is invalid.")
                 return False
         else:

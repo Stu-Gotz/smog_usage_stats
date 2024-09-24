@@ -1,7 +1,6 @@
 import requests
-from typing import Literal
-from Search import Search
-from UsageStatsLookup import BaseStatsSearch
+from typing import Literal, Optional
+from search import Search
 
 # TODO: Account for rating when gen is current gen to ONLY be 1695, otherwise be 1630
 
@@ -12,7 +11,7 @@ class ChaosSearch(Search):
     def __init__(
         self,
         year: str | int,
-        month: Literal["Must be a two digit month string eg: '01' for January"],
+        month: str,
         gen: str | int,
         name: str,
     ) -> None:
@@ -50,7 +49,7 @@ class BaseChaosSearch(ChaosSearch):
     def __init__(
         self,
         year: str | int,
-        month: Literal["Must be a two digit month string eg: '01' for January"],
+        month: str,
         gen: str | int,
         name: str,
         tier: str,
@@ -76,7 +75,7 @@ class MonotypeChaosSearch(ChaosSearch):
     def __init__(
         self,
         year: str | int,
-        month: Literal["Must be a two digit month string eg: '01' for January"],
+        month: str,
         gen: str | int,
         name: str,
         typing: str,
@@ -101,39 +100,10 @@ class MonotypeChaosSearch(ChaosSearch):
         self.base += f"gen{self.gen}monotype-mono{self.typing}-1500.json"
 
 
-# this is to search stats individually, but its a bit more involved, a WIP
-class IndividualStatsSearch(BaseStatsSearch):
-    def __init__(
-        self,
-        year: str | int,
-        month: Literal["Must be a two digit month string eg: '01' for Janu…"],
-        gen: str | int,
-        tier: str,
-        name: str,
-    ) -> None:
-        super().__init__(year, month, gen, tier)
-        self.name = name.lower()
-
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = value.lower()
-
-    def find_individual_usage(self, resmatrix: list[list] = None) -> dict | None:
-        # resmatrix is the resulting 2d array from the self.search() function
-        if not resmatrix:
-            resmatrix = self.search()
-        for m in resmatrix:
-            if m[1] == self.name:
-                return dict(zip(resmatrix[0], m))
-        print("No result found.")
-        return None
 
 
-if __name__ == "__main__":
+
+# if __name__ == "__main__":
     # search = BaseChaosSearch(year="2022", month="07", gen=8, tier="uu", name="SKARMORY")
     # result = search.search()
     # print(f"{search.name}:  {result}\n")
@@ -144,9 +114,9 @@ if __name__ == "__main__":
     # monoresult = monosearch.search()
     # print(f"{monosearch.name}:  {monoresult}\n")
 
-    indysearch = IndividualStatsSearch(2022, "11", "8", "ou", "scIzor")
-    indyresult = indysearch.find_individual_usage()
-    print(f"{indysearch.name}:  {indyresult}\n")
+    # indysearch = IndividualStatsSearch(2022, "11", "8", "ou", "scIzor")
+    # indyresult = indysearch.find_individual_usage()
+    # print(f"{indysearch.name}:  {indyresult}\n")
 
     # print(indyresult['rank'])
 

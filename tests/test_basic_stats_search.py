@@ -34,3 +34,4 @@ def test_basic_search_validation_object(basic_stats_search):
         "ending": "gen9ou-1500.txt",
         "tier": "ou",
     }
+
