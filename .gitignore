@@ -7,5 +7,5 @@ data/reference/
 data/temp/
 .pypirc
 data/test/
-smog_usage_stats.egg-info/
+src/smog_usage_stats.egg-info
 .todo

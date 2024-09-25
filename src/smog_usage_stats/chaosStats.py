@@ -1,13 +1,13 @@
 import requests
 from typing import Literal, Optional
-from search import Search
+from search import _Search
 
 # TODO: Account for rating when gen is current gen to ONLY be 1695, otherwise be 1630
 
 
 # Chaos searches are basically individual pokemon lookups, where one can get deeper analysis
 # such as movesets, held items, EV spreads, etc
-class ChaosSearch(Search):
+class ChaosSearch(_Search):
     def __init__(
         self,
         year: str | int,

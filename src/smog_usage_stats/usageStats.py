@@ -1,11 +1,11 @@
 from typing import Literal, Optional
-from search import Search
+from search import _Search
 import requests
 from bs4 import BeautifulSoup
 from validator_util import Validations
 
 
-class StatsSearch(Search):
+class StatsSearch(_Search):
     def __init__(
         self,
         year: str | int,
@@ -52,6 +52,11 @@ class StatsSearch(Search):
         return outlist
 
     @staticmethod
+    #I think this is either really stupid to include, or something I should use for all
+    #the methods but it feels like I'm doing a lot of nonsense for nothing, I don't 
+    #know what I was thinking when I did this, but at the same time I like how it pre-
+    #filters a lot of the URLs. It feels like I can kinda do this initially on the 
+    #main Search class and use that
     def _vintage_search(year, month, gen, tier) -> str:
         r = requests.get(f"https://www.smogon.com/stats/{year}-{month}/")
         soup = BeautifulSoup(r.text, "html.parser")
@@ -101,7 +106,7 @@ class StatsSearch(Search):
 class BaseStatsSearch(StatsSearch):
     """>tier (str): string of tier to be queried."""
 
-    __doc__ = Search.__doc__ + __doc__
+    __doc__ = _Search.__doc__ + __doc__
 
     def __init__(
         self,
@@ -112,7 +117,6 @@ class BaseStatsSearch(StatsSearch):
     ) -> None:
         super().__init__(year, month, gen)
         self.tier = tier.lower()
-        self.base += f"{self.year}-{self.month}/"
         self._build_url()
 
     @property
@@ -154,7 +158,7 @@ class BaseStatsSearch(StatsSearch):
 class MonotypeStatsSearch(StatsSearch):
     """>typing (str): string of type to be queried."""
 
-    __doc__ = Search.__doc__ + __doc__
+    __doc__ = _Search.__doc__ + __doc__
 
     def __init__(
         self,
@@ -165,7 +169,7 @@ class MonotypeStatsSearch(StatsSearch):
     ) -> None:
         super().__init__(year, month, gen)
         self.typing = typing.lower()
-        self.base += f"{year}-{month}/monotype/"
+        self.base += "monotype/"
         self._build_url()
         self.isMonotype = True
 
