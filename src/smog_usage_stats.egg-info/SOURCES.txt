@@ -6,8 +6,11 @@ setup.py
 src/smog_usage_stats/ChaosStats.py
 src/smog_usage_stats/Search.py
 src/smog_usage_stats/UsageStats.py
-src/smog_usage_stats/Validation.py
 src/smog_usage_stats/__init__.py
+src/smog_usage_stats/chaosStats.py
+src/smog_usage_stats/search.py
+src/smog_usage_stats/usageStats.py
+src/smog_usage_stats/validator_util.py
 src/smog_usage_stats.egg-info/PKG-INFO
 src/smog_usage_stats.egg-info/SOURCES.txt
 src/smog_usage_stats.egg-info/dependency_links.txt
