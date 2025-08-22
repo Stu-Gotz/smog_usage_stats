@@ -15,6 +15,25 @@ import os
 
 __version__ = "1.0.10"
 __author__ = "Alan Nardo"
+__app_name__ = "smog_usage_stats"
+
+
+(
+    SUCCESS,
+    RETRIEVE_ERROR,
+    PARSING_ERROR,
+    DB_READ_ERROR,
+    DB_WRITE_ERROR,
+    DATA_ERROR
+) = range(6)
+
+ERRORS = {
+    RETRIEVE_ERROR: "could not access data source",
+    PARSING_ERROR: "could not read data",
+    DB_READ_ERROR: "database read error",
+    DB_WRITE_ERROR: "database write error",
+    DATA_ERROR: "incorrect data format or corrupted data"
+}
 
 # Get the parent directory
 parent_dir = os.path.dirname(os.path.realpath(__file__))

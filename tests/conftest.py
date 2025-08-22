@@ -2,7 +2,7 @@ import pytest
 import requests
 import os
 from os.path import dirname as up
-from smog_usage_stats import ChaosStats, UsageStats
+from smog_usage_stats import chaosStats, usageStats
 
 
 @pytest.fixture(autouse=True)
@@ -15,19 +15,19 @@ def disable_network_calls(monkeypatch):
 
 @pytest.fixture(autouse=True)
 def sample_return_data():
-    sample_data = open(os.path.join(os.path.abspath(r"tests\\2023-09_gen9ou_test.csv")))
+    sample_data = open(os.path.join(os.path.abspath(r"tests/2023-09_gen9ou_test.csv")))
     return [x.split(',') for x in sample_data.readlines()]
 
 
 @pytest.fixture(autouse=True)
 def sample_monotype_data():
-    sample_mono = open(os.path.join(os.path.abspath(r"tests\\2023-09-mono-psychic-test.csv")))
+    sample_mono = open(os.path.join(os.path.abspath(r"tests/2023-09-mono-psychic-test.csv")))
     return [x.split(',') for x in sample_mono.readlines()]
 
 
 @pytest.fixture
 def basic_stats_search():
-    base_search = UsageStats.BaseStatsSearch(
+    base_search = usageStats.BaseStatsSearch(
         year="2023", month="09", gen=9, tier="ou"
     )
     return base_search
@@ -35,7 +35,7 @@ def basic_stats_search():
 
 @pytest.fixture
 def mono_stats_search():
-    mono_search = UsageStats.MonotypeStatsSearch(
+    mono_search = usageStats.MonotypeStatsSearch(
         year="2023", month="09", gen=9, typing="psychic"
     )
     return mono_search

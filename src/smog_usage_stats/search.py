@@ -1,4 +1,3 @@
-from typing import Literal
 from os.path import dirname as up
 import os
 import shutil
@@ -25,12 +24,13 @@ class _Search:
         self.year = year
         self.month = month
         self.gen = gen
-        self.base = f"https://www.smogon.com/stats/{year}/{month}/"
+        self.base = f"https://www.smogon.com/stats/{year}-{month}/"
+        self.date = datetime(int(self.year), int(self.month), 1, 0, 0)
         self.isMonotype = False
 
     def __str__(self):
         return self.base
-    
+
     @property
     def year(self) -> str | int:
         return self._year
@@ -56,21 +56,18 @@ class _Search:
         self._month = value
 
     def _save_output(
-        self,
-        data: list[list],
-        ending: str,
-        pathname: str | os.PathLike = None
+        self, data: list[list], ending: str, pathname: str | os.PathLike = None
     ) -> None:
         if pathname:
-            storage_dir = f"{os.getcwd()}\\" + pathname
+            storage_dir = os.path.join(os.getcwd(), "smogon_cache", pathname)
         else:
-            storage_dir = f"{os.getcwd()}\\" + "cache"
+            storage_dir = os.path.join(os.getcwd(), "smogon_cache")
 
         if not os.path.exists((storage_dir)):
             os.makedirs(storage_dir)
         # make the document
         filepath = os.path.join(storage_dir, f"{self.year}-{self.month}_{ending}.csv")
-        with open(filepath, "w",newline="") as file:
+        with open(filepath, "w", newline="") as file:
             csvWriter = csv.writer(file, delimiter=",")
             csvWriter.writerows(data)
 
@@ -103,23 +100,14 @@ class _Search:
         validation_object = {k.replace("_", ""): v for k, v in this.items()}
         return validation_object
 
-    # def _locate_base_data_directory(
-    #     self
-    # ) -> os.PathLike:
-    #     """"""
-    #     base_dir = up(up(up(".")))
-    #     # set up the cached dir, theres probably a better way to do this but for now it will suffice
-    #     cache_dir = os.path.join(base_dir, "data")
-    #     return cache_dir
-
     def _set_target_dir(self, target_dir: str):
         return target_dir
-    
+
     @staticmethod
-    def clear_cache() -> None:
+    def clear_cache(target: str) -> None:
         """Clears cache files if there are any."""
         base_dir = up(up("."))
         # set up the cached dir, theres probably a better way to do this but for now it will suffice
-        cache_dir = os.path.join(base_dir, "data\\cache")
+        cache_dir = os.path.join(base_dir, target)
         if os.path.exists(cache_dir):
             shutil.rmtree(cache_dir)
