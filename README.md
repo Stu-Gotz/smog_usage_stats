@@ -92,3 +92,7 @@ If you would like to contribute, feel free to create a fork and submit a pull re
 ## License
 
 MIT License
+
+## Thanks
+
+Thanks to Kaggle user Cristobal Mitchell for the Pokedex dataset.
