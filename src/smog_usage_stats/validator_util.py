@@ -64,6 +64,9 @@ class Validations:
             "7": datetime.strptime("2016-11", "%Y-%m"),
             "8": datetime.strptime("2020-11", "%Y-%m"),
             "9": datetime.strptime("2022-11", "%Y-%m"),
+            "10": datetime.strptime(
+                "2027-01", "%Y-%m"
+            ),  # this will have to be updated to the actual dates when the time comes
         }
         # something like having an object of dates this is where it makes sense to
         # have dt objects rather than strings
@@ -91,5 +94,7 @@ class Validations:
             if month not in (11, 12):
                 print(f"Year {year} and month {month} is invalid.")
                 return False
+            else:
+                return True
         else:
             return True

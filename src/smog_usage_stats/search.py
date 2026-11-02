@@ -21,8 +21,8 @@ class _Search:
         month: str,
         gen: str | int,
     ) -> None:
-        self.year = year
-        self.month = month
+        self.year = str(year)
+        self.month = f"{int(month):02d}"
         self.gen = gen
         self.base = f"https://www.smogon.com/stats/{year}-{month}/"
         self.date = datetime(int(self.year), int(self.month), 1, 0, 0)
@@ -31,77 +31,53 @@ class _Search:
     def __str__(self):
         return self.base
 
-    @property
-    def year(self) -> str | int:
-        return self._year
+    # Don't think I want to save files in a library. That seems unsafe.
+    # Going to leave it here for my own use though.
 
-    @property
-    def month(self) -> str:
-        return self._month
+    # def _save_output(
+    #     self, data: list[list], ending: str, pathname: str | os.PathLike = None
+    # ) -> None:
+    #     if pathname:
+    #         storage_dir = os.path.join(os.getcwd(), "smogon_cache", pathname)
+    #     else:
+    #         storage_dir = os.path.join(os.getcwd(), "smogon_cache")
 
-    @property
-    def gen(self) -> str:
-        return self._gen
+    #     if not os.path.exists((storage_dir)):
+    #         os.makedirs(storage_dir)
+    #     # make the document
+    #     filepath = os.path.join(storage_dir, f"{self.year}-{self.month}_{ending}.csv")
+    #     with open(filepath, "w", newline="") as file:
+    #         csvWriter = csv.writer(file, delimiter=",")
+    #         csvWriter.writerows(data)
 
-    @gen.setter
-    def gen(self, value):
-        self._gen = int(value)
+    #     if os.stat(filepath).st_size < 100:
+    #         os.remove(filepath)
+    #         print(f"File {filepath} deleted as it contained no or very little data.")
 
-    @year.setter
-    def year(self, value):
-        self._year = value
+    # def search_and_save(self, pathname: str | os.PathLike = None) -> None:
+    #     """
+    #     Searches the smogon stats repo and saves files to system.
 
-    @month.setter
-    def month(self, value):
-        self._month = value
+    #         Params:
+    #         pathname: str | os.PathLike -> (Optional) string or os.PathLike
+    #         object for a directory to save the data. If left None will create a
+    #         data directory in the project folder.
 
-    def _save_output(
-        self, data: list[list], ending: str, pathname: str | os.PathLike = None
-    ) -> None:
-        if pathname:
-            storage_dir = os.path.join(os.getcwd(), "smogon_cache", pathname)
-        else:
-            storage_dir = os.path.join(os.getcwd(), "smogon_cache")
-
-        if not os.path.exists((storage_dir)):
-            os.makedirs(storage_dir)
-        # make the document
-        filepath = os.path.join(storage_dir, f"{self.year}-{self.month}_{ending}.csv")
-        with open(filepath, "w", newline="") as file:
-            csvWriter = csv.writer(file, delimiter=",")
-            csvWriter.writerows(data)
-
-        if os.stat(filepath).st_size < 100:
-            os.remove(filepath)
-            print(f"File {filepath} deleted as it contained no or very little data.")
-
-    def search_and_save(self, pathname: str | os.PathLike = None) -> None:
-        """
-        Searches the smogon stats repo and saves files to system.
-
-            Params:
-            pathname: str | os.PathLike -> (Optional) string or os.PathLike
-            object for a directory to save the data. If left None will create a
-            data directory in the project folder.
-
-            Returns:
-            None if saving fails.
-        """
-        data = self.search()
-        if self.ending:
-            ending = self.ending.split("-")[0]
-            self._save_output(data, ending, pathname=pathname)
-        else:
-            print("No data was saved.")
-            return None
+    #         Returns:
+    #         None if saving fails.
+    #     """
+    #     data = self.search()
+    #     if self.ending:
+    #         ending = self.ending.split("-")[0]
+    #         self._save_output(data, ending, pathname=pathname)
+    #     else:
+    #         print("No data was saved.")
+    #         return None
 
     def _create_validation_object(self):
         this = vars(self)
         validation_object = {k.replace("_", ""): v for k, v in this.items()}
         return validation_object
-
-    def _set_target_dir(self, target_dir: str):
-        return target_dir
 
     @staticmethod
     def clear_cache(target: str) -> None:

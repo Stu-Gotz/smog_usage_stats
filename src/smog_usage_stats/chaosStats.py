@@ -18,14 +18,6 @@ class ChaosSearch(_Search):
         self.name = name.lower()
         super().__init__(year, month, gen)
 
-    @property
-    def name(self):
-        return self._name
-
-    @name.setter
-    def name(self, value):
-        self._name = value.lower()
-
     def search(self) -> object | None:
         res = requests.get(self.base)
         page_object = res.json()["data"]
@@ -34,7 +26,7 @@ class ChaosSearch(_Search):
         try:
             lookup = page_object[self.name]
             return lookup
-        except:
+        except KeyError:
             return None
 
     # We will be doing this a lot so make it a function.
@@ -59,14 +51,6 @@ class BaseChaosSearch(ChaosSearch):
         self.base = f"https://www.smogon.com/stats/{self.year}-{self.month}/chaos/"
         self._build_url()
 
-    @property
-    def tier(self) -> str:
-        return self._tier
-
-    @tier.setter
-    def tier(self, value):
-        self._tier = value
-
     def _build_url(self):
         self.base += f"gen{self.gen}{self.tier}-1500.json"
 
@@ -88,36 +72,25 @@ class MonotypeChaosSearch(ChaosSearch):
         self.isMonotype = True
         self._build_url()
 
-    @property
-    def typing(self) -> str:
-        return self._typing
-
-    @typing.setter
-    def typing(self, value):
-        self._typing = value
-
     def _build_url(self):
         self.base += f"gen{self.gen}monotype-mono{self.typing}-1500.json"
 
 
-
-
-
 # if __name__ == "__main__":
-    # search = BaseChaosSearch(year="2022", month="07", gen=8, tier="uu", name="SKARMORY")
-    # result = search.search()
-    # print(f"{search.name}:  {result}\n")
+# search = BaseChaosSearch(year="2022", month="07", gen=8, tier="uu", name="SKARMORY")
+# result = search.search()
+# print(f"{search.name}:  {result}\n")
 
-    # monosearch = MonotypeChaosSearch(
-    #     year=2022, month="11", gen=9, typing="fairy", name="Gardevoir"
-    # )
-    # monoresult = monosearch.search()
-    # print(f"{monosearch.name}:  {monoresult}\n")
+# monosearch = MonotypeChaosSearch(
+#     year=2022, month="11", gen=9, typing="fairy", name="Gardevoir"
+# )
+# monoresult = monosearch.search()
+# print(f"{monosearch.name}:  {monoresult}\n")
 
-    # indysearch = IndividualStatsSearch(2022, "11", "8", "ou", "scIzor")
-    # indyresult = indysearch.find_individual_usage()
-    # print(f"{indysearch.name}:  {indyresult}\n")
+# indysearch = IndividualStatsSearch(2022, "11", "8", "ou", "scIzor")
+# indyresult = indysearch.find_individual_usage()
+# print(f"{indysearch.name}:  {indyresult}\n")
 
-    # print(indyresult['rank'])
+# print(indyresult['rank'])
 
-    # print(result.keys())
+# print(result.keys())
