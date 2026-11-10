@@ -26,6 +26,17 @@ class SaveFormat(str, Enum):
     sql = "sql"
 
 
+def _save_router(data=None, fpath=None, fformat="csv", table=None):
+
+    if fformat == "csv":
+        _save_usage_csv(data, fpath)
+    elif fformat == "json":
+        _save_usage_json(data, fpath)
+    elif fformat == "sql":
+        _save_usage_sql(data, fpath, table)
+    return
+
+
 def _save_usage_csv(rows: list[Usage], path: str | os.PathLike) -> None:
     """Write usage rows to a CSV with a header row. Creates parent folders."""
     if not rows:
@@ -143,23 +154,52 @@ def search(
     ] = "csv",
 ) -> None:
 
-    target = usage_stats(Formatter(year, month, gen, tier))
+    target = usage_stats(Formatter(year, month, gen, tier=tier))
 
-    if save_to:
-        if save_as == "csv":
-            _save_usage_csv(target, save_to)
-        elif save_as == "json":
-            _save_usage_json(target, save_to)
-        elif save_as == "sql":
-            _save_usage_sql(target, save_to, f"gen{gen}{tier}_{year}_{month:02d}")
-        else:
-            raise typer.BadParameter(
-                "save_as option must be one of [csv, json or sql]."
-            )
-    elif save_to and not save_as:
-        raise typer.BadParameter(
-            "No format identifier chosen. Please pass one of [csv, json or sql] to the save_as parameter."
-        )
+    if save_as == "sql":
+        table = f"gen{gen}{tier}_{year}_{month:02d}"
+    else:
+        table = None
+
+    _save_router(target, save_to, save_as, table)
+
+
+@app.command()
+def monotype(
+    year: Annotated[int, typer.Argument(help="Four (4) digit year.")],
+    month: Annotated[
+        int, typer.Argument(min=1, max=12, help="Integer month e.g. 4 for April.")
+    ],
+    gen: Annotated[
+        int,
+        typer.Argument(
+            min=1,
+            max=9,
+            help="Which generation of Pokemon (generations are based on handheld games).",
+        ),
+    ],
+    monotype: Annotated[str | None, typer.Argument(help="What type? e.g. 'water'")],
+    save_to: Annotated[
+        str | None,
+        typer.Argument(
+            help="A folder location to save to.",
+        ),
+    ] = None,
+    save_as: Annotated[
+        SaveFormat | None,
+        typer.Option(
+            help="Choose a file format.",
+        ),
+    ] = "csv",
+):
+
+    target = usage_stats(Formatter(year, month, gen, mono_type=monotype))
+    if save_as == "sql":
+        table = f"gen{gen}{monotype}_{year}_{month:02d}"
+    else:
+        table = None
+
+    _save_router(target, save_to, save_as, table)
 
 
 @app.callback()
