@@ -10,13 +10,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ## [1.1.0] - 2026-11-02 
 ## Complete Rework of core functionality.
 
-  I always hated how I set this up, so I sought out to finally do something about it. Always felt kind of spaghettified, so I've decoupled things since there was really basically only two variants, if you really break it down. **Will break all existing implementations.** 
-  
-  Please see the guide in `MIGRATING.md` for instructions on migration. 
+  I always hated how I set this up, so I sought out to finally do something about it. Always felt kind of spaghettified, so I've decoupled things since there was really basically only two variants, if you really break it down. This should not break any implementations, a compatability layer has been added for backwards compatability. **Please do note**: this layer may be removed at some point in the future so in the interests of future proofing it is wise to convert to the newer implementation.
  
 ### Added
   - Added placeholder for generation 10 in validaiton utils file.
   - Added additional CLI options
+  - CLI can now search basic usage stats and monotype usage stats
+  - CLI can save outputs as one of `csv` `json` or `sql` files.
+  - Expanded tests coverage.
   
 ### Changed
   - Completely refactored code (with assistance) to be more unified and less "clover-shaped".  
