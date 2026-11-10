@@ -7,18 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
  
 ## smog_usage_stats
 
-## [2.0.0] - 2026-11-02 
+## [1.1.0] - 2026-11-02 
 ## Complete Rework of core functionality.
 
   I always hated how I set this up, so I sought out to finally do something about it. Always felt kind of spaghettified, so I've decoupled things since there was really basically only two variants, if you really break it down. **Will break all existing implementations.** 
   
-  Please see the guide in `migrating.md` for instructions on migration. 
+  Please see the guide in `MIGRATING.md` for instructions on migration. 
  
 ### Added
   - Added placeholder for generation 10 in validaiton utils file.
-
+  - Added additional CLI options
+  
 ### Changed
-  - Changed functionality in search.py wrt setting and getting parameters. 
+  - Completely refactored code (with assistance) to be more unified and less "clover-shaped".  
   - Removed save options because that's probably not something that I should have left in a library. From now everything will be on the user. Keeping the code in there though because I use it.
   - Cleaned up `__init__.py`.
   - Cleaned up `requirements.txt`.

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-import datetime
+from datetime import datetime
 
 
 from .errors import InvalidFormatError
@@ -78,7 +78,7 @@ class Formatter:
 
     @property
     def uses_modern_naming(self) -> bool:
-        return self.period >= MODERN_START
+        return (self.year, self.month) >= MODERN_START
 
     @property
     def slug(self) -> str:

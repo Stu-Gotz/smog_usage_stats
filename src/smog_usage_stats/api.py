@@ -39,14 +39,14 @@ def _handle_slug(fmt: Formatter) -> str:
 
 
 def usage_url(fmt: Formatter, rating: int = DEFAULT_RATING) -> str:
-    return f"{_folder(fmt)}{_handle_slug(fmt) - {rating}}.txt"
+    return f"{_folder(fmt)}{_handle_slug(fmt)}-{rating}.txt"
 
 
 def chaos_url(fmt: Formatter, rating: int = DEFAULT_RATING) -> str:
-    return f"{_folder(fmt, 'chaos')}{_handle_slug(fmt) - rating}.json"
+    return f"{_folder(fmt, 'chaos')}{_handle_slug(fmt)}-{rating}.json"
 
 
-def tier_stats(fmt: Formatter, rating: int = DEFAULT_RATING) -> list[Usage]:
+def usage_stats(fmt: Formatter, rating: int = DEFAULT_RATING) -> list[Usage]:
     return parse_usage(query.get_text(usage_url(fmt, rating)), fmt)
 
 
@@ -54,10 +54,14 @@ def single_stats(
     fmt: Formatter, name: str, rating: int = DEFAULT_RATING
 ) -> Usage | None:
     wanted = name.replace(" ", "").lower()
-    return next((row for row in tier_stats(fmt, rating) if row.pokemon == wanted), None)
+    return next(
+        (row for row in usage_stats(fmt, rating) if row.pokemon == wanted), None
+    )
 
 
-def chaos_stats(fmt: Formatter, name: str, rating: int = DEFAULT_RATING) -> dict | None:
+def extended_stats(
+    fmt: Formatter, name: str, rating: int = DEFAULT_RATING
+) -> dict | None:
     return parse_chaos(query.get_json(chaos_url(fmt, rating)), name)
 
 

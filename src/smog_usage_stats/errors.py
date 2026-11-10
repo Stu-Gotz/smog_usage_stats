@@ -1,4 +1,4 @@
-class InvalidFormatError(Exception, ValueError):
+class InvalidFormatError(ValueError):
     """The year/month/gen/tier combination can't exist on Smogon."""
 
 

@@ -29,7 +29,7 @@ def normalise_name(name: str) -> str:
     return name.replace(" ", "").lower()
 
 
-def pars_usage(text: str, fmt: Formatter) -> list[Usage]:
+def parse_usage(text: str, fmt: Formatter) -> list[Usage]:
     rows = []
     for line in text.splitlines():
         # remove all linebreaks,symbols and make lowercase
