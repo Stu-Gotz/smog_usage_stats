@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 [project]
 dynamic = ["dependencies"]
 name = "smog_usage_stats"
-version = "1.0.10"
+version = "1.1.0"
 readme = "README.md"
 authors = [{ name = "stu.gotz.dev", email = "gotz.stu.dev@gmail.com" }]
 license = { file = "LICENSE" }
@@ -18,7 +18,7 @@ classifiers = [
     "Operating System :: OS Independent"
 ]
 keywords = ["pokemon", "usage", "pokemon showdown", "smogon"]
-requires-python = ">=3.7"
+requires-python = ">=3.10"
 
 [tools.setuptools]
 packages = ["src"]

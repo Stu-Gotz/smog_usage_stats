@@ -1,0 +1,35 @@
+
+# Change Log
+All notable changes to this project will be documented in this file.
+ 
+The format is based on [Keep a Changelog](http://keepachangelog.com/)
+and this project adheres to [Semantic Versioning](http://semver.org/).
+ 
+## smog_usage_stats
+
+## [1.1.0] - 2026-11-02 
+## Complete Rework of core functionality.
+
+  I always hated how I set this up, so I sought out to finally do something about it. Always felt kind of spaghettified, so I've decoupled things since there was really basically only two variants, if you really break it down. **Will break all existing implementations.** 
+  
+  Please see the guide in `MIGRATING.md` for instructions on migration. 
+ 
+### Added
+  - Added placeholder for generation 10 in validaiton utils file.
+  - Added additional CLI options
+  
+### Changed
+  - Completely refactored code (with assistance) to be more unified and less "clover-shaped".  
+  - Removed save options because that's probably not something that I should have left in a library. From now everything will be on the user. Keeping the code in there though because I use it.
+  - Cleaned up `__init__.py`.
+  - Cleaned up `requirements.txt`.
+  - Removed setters and getters, moved type/case coersion to `__init__` in all cases.
+
+### Fixed
+  - Fixed logic in validation to actually perform checks, provided better error handling.
+
+## Everything before
+ 
+### Did not keep change log before 1.0.11
+
+If you really are curious, check the commit history but be warned it's pretty much just me and I'm not an artist of commit messages.

@@ -1,0 +1,142 @@
+{
+    "info": {
+        "metagame": "gen9ou",
+        "cutoff": 1500.0,
+        "cutoff deviation": 0,
+        "team type": null,
+        "number of battles": 1912345
+    },
+    "data": {
+        "Great Tusk": {
+            "Raw count": 1143813,
+            "Viability Ceiling": [
+                1143813,
+                92,
+                89,
+                85
+            ],
+            "Abilities": {
+                "protosynthesis": 1143813.0
+            },
+            "Items": {
+                "boosterenergy": 512000.0,
+                "leftovers": 311000.0,
+                "rockyhelmet": 190000.0
+            },
+            "Spreads": {
+                "Jolly:0/252/4/0/0/252": 402000.0,
+                "Impish:252/0/216/0/0/40": 228000.0
+            },
+            "Happiness": {
+                "255": 1143813.0
+            },
+            "Moves": {
+                "headlongrush": 980000.0,
+                "rapidspin": 870000.0,
+                "icespinner": 640000.0,
+                "knockoff": 610000.0,
+                "stealthrock": 420000.0
+            },
+            "Tera Types": {
+                "steel": 430000.0,
+                "water": 260000.0,
+                "ground": 180000.0
+            },
+            "Teammates": {
+                "Kingambit": 301000.0,
+                "Iron Valiant": 205000.0
+            },
+            "Checks and Counters": {
+                "Corviknight": [
+                    210000.0,
+                    0.62,
+                    0.04
+                ]
+            }
+        },
+        "Kingambit": {
+            "Raw count": 956571,
+            "Viability Ceiling": [
+                956571,
+                93,
+                90,
+                86
+            ],
+            "Abilities": {
+                "supremeoverlord": 940000.0,
+                "defiant": 16571.0
+            },
+            "Items": {
+                "leftovers": 410000.0,
+                "blackglasses": 260000.0
+            },
+            "Spreads": {
+                "Adamant:252/252/0/0/4/0": 390000.0
+            },
+            "Happiness": {
+                "255": 956571.0
+            },
+            "Moves": {
+                "kowtowcleave": 920000.0,
+                "suckerpunch": 900000.0,
+                "swordsdance": 700000.0,
+                "ironhead": 610000.0
+            },
+            "Tera Types": {
+                "dark": 500000.0,
+                "flying": 210000.0
+            },
+            "Teammates": {
+                "Great Tusk": 301000.0
+            },
+            "Checks and Counters": {
+                "Great Tusk": [
+                    180000.0,
+                    0.58,
+                    0.05
+                ]
+            }
+        },
+        "Iron Valiant": {
+            "Raw count": 820000,
+            "Viability Ceiling": [
+                820000,
+                91,
+                88,
+                84
+            ],
+            "Abilities": {
+                "quarkdrive": 820000.0
+            },
+            "Items": {
+                "boosterenergy": 600000.0,
+                "choicespecs": 120000.0
+            },
+            "Spreads": {
+                "Timid:0/0/0/252/4/252": 350000.0
+            },
+            "Happiness": {
+                "255": 820000.0
+            },
+            "Moves": {
+                "moonblast": 790000.0,
+                "calmmind": 450000.0,
+                "encore": 400000.0
+            },
+            "Tera Types": {
+                "fairy": 300000.0,
+                "steel": 220000.0
+            },
+            "Teammates": {
+                "Great Tusk": 205000.0
+            },
+            "Checks and Counters": {
+                "Kingambit": [
+                    150000.0,
+                    0.66,
+                    0.03
+                ]
+            }
+        }
+    }
+}
