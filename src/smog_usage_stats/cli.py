@@ -44,8 +44,8 @@ def _save_usage_csv(rows: list[Usage], path: str | os.PathLike) -> None:
     folder = os.path.dirname(os.fspath(path))
     if folder:
         os.makedirs(folder, exist_ok=True)
-    with open(path, "w", newline="") as file:
-        writer = csv.DictWriter(file, fieldnames=COLUMNS)
+    with open(path, "w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=COLUMNS)
         writer.writeheader()
         writer.writerows(row.as_dict() for row in rows)
 
@@ -54,11 +54,11 @@ def _save_usage_json(rows: list[Usage], path: str | os.PathLike) -> None:
     if not rows:
         raise ValueError("No data present.")
     folder = os.path.dirname(os.fspath(path))
-    data = [rows.as_dict() for row in rows]
+    data = [row.as_dict() for row in rows]
     if folder:
         os.makedirs(folder, exist_ok=True)
-    with open(path, "w", newline="") as file:
-        json.dump(data, file)
+    with open(path, "w", newline="") as f:
+        json.dump(data, f)
 
 
 def _save_usage_sql(
@@ -76,7 +76,9 @@ def _save_usage_sql(
     if not all(col.isidentifier() for col in column_names):
         raise ValueError("Invalid column names.")
 
-    os.makedirs(os.path.dirname(os.fspath(path)), exist_ok=True)
+    folder = os.path.dirname(os.fspath(path))
+    if folder:
+        os.makedirs(folder, exist_ok=True)
 
     # ensures columns are properly typed and nobody gets too helpful
     columns = [
@@ -98,7 +100,7 @@ def _save_usage_sql(
 
     create_db_query = (
         f'CREATE TABLE IF NOT EXISTS "{table_name}" ('
-        f'{column_definitions}, PRIMARY KEY ("rank")'
+        f'{column_definitions}, PRIMARY KEY ("rank"))'
     )
 
     insert_query = f'INSERT OR REPLACE INTO "{table_name}" ({column_names}) VALUES ({placeholders})'
@@ -142,7 +144,7 @@ def search(
     tier: Annotated[str | None, typer.Argument(help="What tier of battles?")] = "ou",
     save_to: Annotated[
         str | None,
-        typer.Argument(
+        typer.Option(
             help="A folder location to save to.",
         ),
     ] = None,
@@ -153,15 +155,14 @@ def search(
         ),
     ] = "csv",
 ) -> None:
+    z = Formatter(year, month, gen, tier=tier)
+    target = usage_stats(z)
 
-    target = usage_stats(Formatter(year, month, gen, tier=tier))
+    fname = f"gen{z.gen}{z.tier}_{z.year}_{z.month}"
 
-    if save_as == "sql":
-        table = f"gen{gen}{tier}_{year}_{month:02d}"
-    else:
-        table = None
-
-    _save_router(target, save_to, save_as, table)
+    location = os.path.join(save_to, f"{fname}.{save_as.value}")
+    if save_to:
+        _save_router(target, location, save_as.value, table=fname)
 
 
 @app.command()
@@ -192,14 +193,14 @@ def monotype(
         ),
     ] = "csv",
 ):
+    z = Formatter(year, month, gen, mono_type=monotype)
+    target = usage_stats(z)
 
-    target = usage_stats(Formatter(year, month, gen, mono_type=monotype))
-    if save_as == "sql":
-        table = f"gen{gen}{monotype}_{year}_{month:02d}"
-    else:
-        table = None
+    fname = f"gen{z.gen}{z.monotype}_{z.year}_{z.month}"
 
-    _save_router(target, save_to, save_as, table)
+    location = os.path.join(save_to, f"{fname}.{save_as.value}")
+    if save_to:
+        _save_router(target, location, save_as.value, table=fname)
 
 
 @app.callback()
