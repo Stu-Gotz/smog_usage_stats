@@ -5,7 +5,7 @@ import os
 
 from . import query
 from .errors import PageNotFound
-from .formatting import Formatter
+from .formatting import Metagame
 from .transformer import (
     COLUMNS,
     Usage,
@@ -17,7 +17,7 @@ from .transformer import (
 DEFAULT_RATING = 1500
 
 
-def _folder(fmt: Formatter, kind: str = "") -> str:
+def _folder(fmt: Metagame, kind: str = "") -> str:
     parts = [query.BASE_URL, fmt.period]
     if fmt.is_monotype:
         parts.append("monotype")
@@ -26,7 +26,7 @@ def _folder(fmt: Formatter, kind: str = "") -> str:
     return "/".join(parts) + "/"
 
 
-def _handle_slug(fmt: Formatter) -> str:
+def _handle_slug(fmt: Metagame) -> str:
 
     if fmt.uses_modern_naming or fmt.is_monotype:
         return fmt.slug
@@ -38,20 +38,20 @@ def _handle_slug(fmt: Formatter) -> str:
     raise PageNotFound(f"No stats for {fmt.slug} in {fmt.period}.")
 
 
-def usage_url(fmt: Formatter, rating: int = DEFAULT_RATING) -> str:
+def usage_url(fmt: Metagame, rating: int = DEFAULT_RATING) -> str:
     return f"{_folder(fmt)}{_handle_slug(fmt)}-{rating}.txt"
 
 
-def chaos_url(fmt: Formatter, rating: int = DEFAULT_RATING) -> str:
+def chaos_url(fmt: Metagame, rating: int = DEFAULT_RATING) -> str:
     return f"{_folder(fmt, 'chaos')}{_handle_slug(fmt)}-{rating}.json"
 
 
-def usage_stats(fmt: Formatter, rating: int = DEFAULT_RATING) -> list[Usage]:
+def usage_stats(fmt: Metagame, rating: int = DEFAULT_RATING) -> list[Usage]:
     return parse_usage(query.get_text(usage_url(fmt, rating)), fmt)
 
 
 def single_stats(
-    fmt: Formatter, name: str, rating: int = DEFAULT_RATING
+    fmt: Metagame, name: str, rating: int = DEFAULT_RATING
 ) -> Usage | None:
     wanted = name.replace(" ", "").lower()
     return next(
@@ -60,7 +60,7 @@ def single_stats(
 
 
 def extended_stats(
-    fmt: Formatter, name: str, rating: int = DEFAULT_RATING
+    fmt: Metagame, name: str, rating: int = DEFAULT_RATING
 ) -> dict | None:
     return parse_chaos(query.get_json(chaos_url(fmt, rating)), name)
 

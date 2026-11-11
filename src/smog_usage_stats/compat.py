@@ -8,7 +8,7 @@ import shutil
 import warnings
 
 from . import api, query
-from .formatting import Formatter
+from .formatting import Metagame
 from .transformer import COLUMNS, normalise_name, parse_usage, parse_chaos
 
 
@@ -28,7 +28,7 @@ def _warn(old: str, new: str) -> None:
 class StatsSearch:
     """Shared behavior of BaseStatsSearch and MonotypeStatsSearch."""
 
-    format: Formatter
+    format: Metagame
 
     def __init__(self, year, month, gen):
         # 1.x kept year and month exactly as passed, and converted gen to int.
@@ -92,8 +92,8 @@ class StatsSearch:
 
 class BaseStatsSearch(StatsSearch):
     def __init__(self, year, month, gen, tier):
-        _warn("BaseStatsSearch", "usage_stats(Formatter(year, month, gen, tier=...))")
-        self.format = Formatter(year, month, gen, tier=tier)
+        _warn("BaseStatsSearch", "usage_stats(Metagame(year, month, gen, tier=...))")
+        self.format = Metagame(year, month, gen, tier=tier)
         self.tier = self.format.tier
         super().__init__(year, month, gen)
 
@@ -102,9 +102,9 @@ class MonotypeStatsSearch(StatsSearch):
     def __init__(self, year, month, gen, typing):
         _warn(
             "MonotypeStatsSearch",
-            "usage_stats(Formatter(year, month, gen, mono_type=...))",
+            "usage_stats(Metagame(year, month, gen, mono_type=...))",
         )
-        self.format = Formatter(year, month, gen, mono_type=typing)
+        self.format = Metagame(year, month, gen, mono_type=typing)
         self.typing = self.format.mono_type
         super().__init__(year, month, gen)
 
@@ -112,7 +112,7 @@ class MonotypeStatsSearch(StatsSearch):
 class ChaosSearch:
     """Shared behavior of BaseChaosSearch and MonotypeChaosSearch."""
 
-    format: Formatter
+    format: Metagame
 
     def __init__(self, year, month, gen, name):
         self.year = year
@@ -136,9 +136,9 @@ class BaseChaosSearch(ChaosSearch):
     def __init__(self, year, month, gen, name, tier):
         _warn(
             "BaseChaosSearch",
-            "extended_stats(Formatter(year, month, gen, tier=...), name)",
+            "extended_stats(Metagame(year, month, gen, tier=...), name)",
         )
-        self.format = Formatter(year, month, gen, tier=tier)
+        self.format = Metagame(year, month, gen, tier=tier)
         self.tier = self.format.tier
         super().__init__(year, month, gen, name)
 
@@ -147,8 +147,8 @@ class MonotypeChaosSearch(ChaosSearch):
     def __init__(self, year, month, gen, name, typing):
         _warn(
             "MonotypeChaosSearch",
-            "extended_stats(Formatter(year, month, gen, mono_type=...), name)",
+            "extended_stats(Metagame(year, month, gen, mono_type=...), name)",
         )
-        self.format = Formatter(year, month, gen, mono_type=typing)
+        self.format = Metagame(year, month, gen, mono_type=typing)
         self.typing = self.format.mono_type
         super().__init__(year, month, gen, name)

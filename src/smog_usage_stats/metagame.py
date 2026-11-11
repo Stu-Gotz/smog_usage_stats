@@ -44,7 +44,7 @@ CUTOFFS = {
 
 
 @dataclass(frozen=True)
-class Formatter:
+class Metagame:
     """A single month of stats per metagame.
 
     Pass a ``tier`` (e.g. "ou") for standard formats or a ``mono_type``
@@ -94,7 +94,7 @@ class Formatter:
 
 
 # Validator to validate
-def _validate(fmt: Formatter) -> None:
+def _validate(fmt: Metagame) -> None:
     if (fmt.tier is None) == (fmt.mono_type is None):
         raise InvalidFormatError("Pass exactly one of tier= or mono_type=.")
     if not 1 <= fmt.month <= 12:

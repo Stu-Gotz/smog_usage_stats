@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from bs4 import BeautifulSoup
 
-from .formatting import Formatter
+from .formatting import Metagame
 
 
 @dataclass(frozen=True)
@@ -29,7 +29,7 @@ def normalise_name(name: str) -> str:
     return name.replace(" ", "").lower()
 
 
-def parse_usage(text: str, fmt: Formatter) -> list[Usage]:
+def parse_usage(text: str, fmt: Metagame) -> list[Usage]:
     rows = []
     for line in text.splitlines():
         # remove all linebreaks,symbols and make lowercase

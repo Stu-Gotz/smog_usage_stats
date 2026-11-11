@@ -2,7 +2,7 @@ from typing import Annotated
 import typer
 from . import __version__, __app_name__
 
-from .formatting import Formatter
+from .formatting import Metagame
 from .transformer import Usage, COLUMNS
 from .api import usage_stats
 
@@ -155,7 +155,7 @@ def search(
         ),
     ] = "csv",
 ) -> None:
-    z = Formatter(year, month, gen, tier=tier)
+    z = Metagame(year, month, gen, tier=tier)
     target = usage_stats(z)
 
     fname = f"gen{z.gen}{z.tier}_{z.year}_{z.month}"
@@ -193,7 +193,7 @@ def monotype(
         ),
     ] = "csv",
 ):
-    z = Formatter(year, month, gen, mono_type=monotype)
+    z = Metagame(year, month, gen, mono_type=monotype)
     target = usage_stats(z)
 
     fname = f"gen{z.gen}{z.monotype}_{z.year}_{z.month}"

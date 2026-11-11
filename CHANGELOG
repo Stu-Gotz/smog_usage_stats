@@ -5,9 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
  
+Some of these are made using an LLM, should be easy to spot which. It writes better than I do.
+
 ## smog_usage_stats
 
-## [1.1.0] - 2026-11-02 
+## [2.0.0] - 2026-11-02 
 ## Complete Rework of core functionality.
 
   I always hated how I set this up, so I sought out to finally do something about it. Always felt kind of spaghettified, so I've decoupled things since there was really basically only two variants, if you really break it down. This should not break any implementations, a compatability layer has been added for backwards compatability. **Please do note**: this layer may be removed at some point in the future so in the interests of future proofing it is wise to convert to the newer implementation.
@@ -16,18 +18,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
   - Added placeholder for generation 10 in validaiton utils file.
   - Added additional CLI options
   - CLI can now search basic usage stats and monotype usage stats
-  - CLI can save outputs as one of `csv` `json` or `sql` files.
+  - CLI can save outputs as one of `csv` `json` or `sql` files via `--save as <option>`.
   - Expanded tests coverage.
-  
+  - New function-based API: usage_stats(), pokemon_usage() and chaos_stats(), built around a single Metagame object that describes the year, month, generation, and tier or monotype type.
+  - Usage results are returned as typed Usage rows with real numeric values instead of lists of strings.
+  - Improved clarity on error handling.
+  - A rating parameter for choosing which ladder rating cutoff to fetch.
+  - Added console command `smog-usage-stats`. Help can be accessed via `--help` flag.
+
 ### Changed
   - Completely refactored code (with assistance) to be more unified and less "clover-shaped".  
   - Removed save options because that's probably not something that I should have left in a library. From now everything will be on the user. Keeping the code in there though because I use it.
   - Cleaned up `__init__.py`.
   - Cleaned up `requirements.txt`.
   - Removed setters and getters, moved type/case coersion to `__init__` in all cases.
+  - Now required `Python>=3.10` and package `Typer>=0.9`
 
 ### Fixed
   - Fixed logic in validation to actually perform checks, provided better error handling.
+  - November and December 2014 are no longer rejected as invalid dates.
+  - Pre-July-2017 file lookups no longer miss matches or return inconsistent results.
+  - An error is now raised when Smogon is missing a file, instead of an error page being parsed as data.
+  - Generations with no recorded start date no longer cause a KeyError.
+  - Package imports no longer modify sys.path.
+
+### Refactoring
+
 
 ## Everything before
  

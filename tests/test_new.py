@@ -1,7 +1,7 @@
 import pytest
 
 from smog_usage_stats import (
-    Formatter,
+    Metagame,
     InvalidFormatError,
     PageNotFound,
     extended_stats,
@@ -11,8 +11,8 @@ from smog_usage_stats import (
 )
 from smog_usage_stats.transformer import parse_chaos
 
-OU = Formatter(2023, 9, 9, tier="ou")
-MONO = Formatter(2023, 9, 9, mono_type="psychic")
+OU = Metagame(2023, 9, 9, tier="ou")
+MONO = Metagame(2023, 9, 9, mono_type="psychic")
 
 
 def assert_matches_csv(rows, expected_csv):
@@ -30,7 +30,7 @@ def assert_matches_csv(rows, expected_csv):
 
 
 def test_inputs_are_normalized():
-    fmt = Formatter("2023", "09", "9", tier="OU")
+    fmt = Metagame("2023", "09", "9", tier="OU")
     assert (fmt.year, fmt.month, fmt.gen, fmt.tier) == (2023, 9, 9, "ou")
     assert fmt.period == "2023-09"
 
@@ -47,11 +47,11 @@ def test_inputs_are_normalized():
 )
 def test_invalid_formats_raise(kwargs):
     with pytest.raises(InvalidFormatError):
-        Formatter(**kwargs)
+        Metagame(**kwargs)
 
 
 def test_november_2014_is_valid():
-    Formatter(2014, 11, 6, tier="ou")  # the 1.x validator rejected this
+    Metagame(2014, 11, 6, tier="ou")  # the 1.x validator rejected this
 
 
 # --- Usage stats ----------------------------------------------------------
@@ -89,7 +89,7 @@ def test_pokemon_usage():
 
 def test_missing_file_raises_not_found():
     with pytest.raises(PageNotFound):
-        usage_stats(Formatter(2023, 9, 9, tier="uu"))  # no fixture -> fake 404
+        usage_stats(Metagame(2023, 9, 9, tier="uu"))  # no fixture -> fake 404
 
 
 # --- Chaos stats ----------------------------------------------------------

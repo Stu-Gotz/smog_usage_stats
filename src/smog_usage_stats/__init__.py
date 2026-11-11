@@ -6,7 +6,7 @@ from .api import (
     usage_url,
 )
 from .errors import QueryError, InvalidFormatError, PageNotFound
-from .formatting import Formatter
+from .formatting import Metagame
 from .transformer import Usage
 from .compat import (
     BaseStatsSearch,
@@ -22,7 +22,7 @@ __app_name__ = "smog_usage_stats"
 
 
 __all__ = [
-    "Formatter",
+    "Metagame",
     "Usage",
     "usage_stats",
     "single_stats",
