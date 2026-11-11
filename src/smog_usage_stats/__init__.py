@@ -16,7 +16,7 @@ from .compat import (
     StatsSearch,
 )
 
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __author__ = "Alan Nardo"
 __app_name__ = "smog_usage_stats"
 
