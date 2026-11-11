@@ -33,7 +33,7 @@ dependencies = [
 dev = ["black", "bumpver", "isort", "pytest"]
 
 [tool.bumpver]
-current_version = "1.0.10"
+current_version = "1.1.0"
 version_pattern = "MAJOR.MINOR.PATCH"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true
