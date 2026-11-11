@@ -1,6 +1,6 @@
 # smog_usage_stats
 
-A Python wrapper for interacting with Smogon's Pokemon Showdown usage stats data [found here](https://smogon.com/stats) and making it accessible in usable data structures.
+A Python wrapper for interacting with Smogon's Pokemon Showdown usage stats data [found here](https://smogon.com/stats) and making it accessible in usable data structures. This is purely a passion project and I am in no way affiliated with Smogon, Nintendo or GameFreak, in any way. **Please do not abuse Smogon's servers.** If you intend to use this as part of a larger project, please cache the data in some way, plus it will also be faster for your application.
 
 ## Quick Rundown
 
@@ -10,6 +10,7 @@ A Python wrapper for interacting with Smogon's Pokemon Showdown usage stats data
 
 If your system uses `pip3` instead of `pip`, use that.
 
+#### Requires `Python>=3.10`.
 
 ### How it all works
 
