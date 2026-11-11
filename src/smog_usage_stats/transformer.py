@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, asdict
 from bs4 import BeautifulSoup
 
-from .formatting import Metagame
+from .metagame import Metagame
 
 
 @dataclass(frozen=True)

@@ -5,7 +5,7 @@ import os
 
 from . import query
 from .errors import PageNotFound
-from .formatting import Metagame
+from .metagame import Metagame
 from .transformer import (
     COLUMNS,
     Usage,

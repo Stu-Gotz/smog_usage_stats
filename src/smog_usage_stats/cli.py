@@ -2,7 +2,7 @@ from typing import Annotated
 import typer
 from . import __version__, __app_name__
 
-from .formatting import Metagame
+from .metagame import Metagame
 from .transformer import Usage, COLUMNS
 from .api import usage_stats
 

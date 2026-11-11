@@ -73,14 +73,14 @@ Usage(rank=44, pokemon='scizor', usage_pct=3.50114, raw_usage=67725, raw_pct=3.5
 
 Returns `None` if the Pokémon doesn't appear in that month's stats. Names ignore case and spaces, so `"Iron Valiant"` and `"ironvaliant"` both work.
 
-#### `chaos_stats` → detailed "Chaos" data for a single Pokémon
+#### `extended_stats` → detailed "Chaos" data for a single Pokémon
 
 The chaos data covers moves, items, abilities, spreads, teammates, checks and counters, and more.
 
 ```python
-from smog_usage_stats import Metagame, chaos_stats
+from smog_usage_stats import Metagame, extended_stats
 
-result = chaos_stats(Metagame(2022, 7, 8, tier="uu"), "SKARMORY")
+result = extended_stats(Metagame(2022, 7, 8, tier="uu"), "SKARMORY")
 ```
 
 ```
@@ -92,7 +92,7 @@ result = chaos_stats(Metagame(2022, 7, 8, tier="uu"), "SKARMORY")
 It works the same way for monotype:
 
 ```python
-result = chaos_stats(Metagame(2022, 11, 9, mono_type="fairy"), "Gardevoir")
+result = extended_stats(Metagame(2022, 11, 9, mono_type="fairy"), "Gardevoir")
 ```
 
 ```

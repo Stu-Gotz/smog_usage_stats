@@ -8,7 +8,7 @@ import shutil
 import warnings
 
 from . import api, query
-from .formatting import Metagame
+from .metagame import Metagame
 from .transformer import COLUMNS, normalise_name, parse_usage, parse_chaos
 
 

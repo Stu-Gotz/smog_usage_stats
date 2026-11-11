@@ -6,7 +6,7 @@ from .api import (
     usage_url,
 )
 from .errors import QueryError, InvalidFormatError, PageNotFound
-from .formatting import Metagame
+from .metagame import Metagame
 from .transformer import Usage
 from .compat import (
     BaseStatsSearch,

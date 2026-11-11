@@ -20,7 +20,7 @@ Some of these are made using an LLM, should be easy to spot which. It writes bet
   - CLI can now search basic usage stats and monotype usage stats
   - CLI can save outputs as one of `csv` `json` or `sql` files via `--save as <option>`.
   - Expanded tests coverage.
-  - New function-based API: usage_stats(), pokemon_usage() and chaos_stats(), built around a single Metagame object that describes the year, month, generation, and tier or monotype type.
+  - New function-based API: usage_stats(), pokemon_usage() and extended_stats(), built around a single Metagame object that describes the year, month, generation, and tier or monotype type.
   - Usage results are returned as typed Usage rows with real numeric values instead of lists of strings.
   - Improved clarity on error handling.
   - A rating parameter for choosing which ladder rating cutoff to fetch.
